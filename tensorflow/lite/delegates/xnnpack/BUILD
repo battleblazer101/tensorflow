@@ -1422,6 +1422,7 @@ cc_test(
     deps = [
         ":moe_delegate_kernel",
         ":test_main",
+        ":xnnpack_delegate",
         "//tensorflow/lite:builtin_ops",
         "//tensorflow/lite:framework",
         "//tensorflow/lite/core:framework",
