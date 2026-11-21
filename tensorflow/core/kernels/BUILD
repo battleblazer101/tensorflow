@@ -458,11 +458,11 @@ tf_cuda_library(
     srcs = ["ops_testutil.cc"],
     hdrs = ["ops_testutil.h"],
     cuda_deps = [
-        "//tensorflow/core/common_runtime/gpu:loose_headers",
         "//tensorflow/core:gpu_lib",
         "//tensorflow/core:gpu_runtime",
     ],
     deps = [
+        "//tensorflow/core/common_runtime/gpu:loose_headers",
         "//tensorflow/core:core_cpu",
         "//tensorflow/core:core_cpu_internal",
         "//tensorflow/core:framework",
