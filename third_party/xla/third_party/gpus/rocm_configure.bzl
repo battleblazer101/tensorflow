@@ -153,6 +153,9 @@ def _rocm_include_path(repository_ctx, rocm_config, bash_bin):
     resource_dir = str(rocm_path.get_child(resource_dir_rel))
 
     inc_dirs.append(resource_dir + "/include")
+    # Clang reports CUDA wrapper dependencies using its resolved resource path.
+    # Bazel must recognize that real path as a compiler builtin include root.
+    inc_dirs.append(resource_dir_abs + "/include")
     inc_dirs.append(resource_dir + "/share")
 
     return inc_dirs
