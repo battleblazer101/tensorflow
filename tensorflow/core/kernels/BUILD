@@ -3678,7 +3678,9 @@ tf_kernel_library(
     name = "check_numerics_op",
     features = ["-layering_check"],
     prefix = "check_numerics_op",
-    deps = MATH_DEPS + ["//tensorflow/core:framework_internal"],
+    deps = MATH_DEPS + ["//tensorflow/core:framework_internal"] + if_cuda_or_rocm([
+        "//tensorflow/core/common_runtime/gpu:gpu_lib",
+    ]),
 )
 
 tf_kernel_library(
