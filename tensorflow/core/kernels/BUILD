@@ -1158,6 +1158,8 @@ tf_kernel_library(
     deps = ARRAY_DEPS + [
         ":loose_headers",
         ":split_lib",
+        ":gpu_device_array",
+        "//tensorflow/core/platform:stream_executor",
     ],
 )
 
@@ -1169,6 +1171,8 @@ tf_kernel_library(
     deps = ARRAY_DEPS + [
         ":loose_headers",
         ":split_lib",
+        ":gpu_device_array",
+        "//tensorflow/core/platform:stream_executor",
     ],
 )
 
