@@ -77,14 +77,14 @@ __device__ EIGEN_STRONG_INLINE bool OverThreshold(const Box* a, const Box* b,
                                                   const T iou_threshold) {
   const float b_area = (b->x2 - b->x1) * (b->y2 - b->y1);
   if (a_area == 0.0f || b_area == 0.0f) return false;
-  const float xx1 = fmaxf(a->x1, b->x1);
-  const float yy1 = fmaxf(a->y1, b->y1);
-  const float xx2 = fminf(a->x2, b->x2);
-  const float yy2 = fminf(a->y2, b->y2);
+  const float xx1 = __builtin_fmaxf(a->x1, b->x1);
+  const float yy1 = __builtin_fmaxf(a->y1, b->y1);
+  const float xx2 = __builtin_fminf(a->x2, b->x2);
+  const float yy2 = __builtin_fminf(a->y2, b->y2);
 
   // fdimf computes the positive difference between xx2+1 and xx1.
-  const float w = fdimf(xx2, xx1);
-  const float h = fdimf(yy2, yy1);
+  const float w = __builtin_fdimf(xx2, xx1);
+  const float h = __builtin_fdimf(yy2, yy1);
   const float intersection = w * h;
 
   // Testing for aa/bb > t
