@@ -925,7 +925,7 @@ tf_kernel_library(
     name = "debug_ops",
     features = ["-layering_check"],
     prefix = "debug_ops",
-    deps = ARRAY_DEPS + [
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + ARRAY_DEPS + [
         "//tensorflow/core:gpu_runtime",
         "//tensorflow/core/debug:debug_io_utils",
     ],
@@ -1242,7 +1242,7 @@ tf_kernel_library(
     name = "unique_op",
     features = if_cuda(["-layering_check"]),
     prefix = "unique_op",
-    deps = ARRAY_DEPS + [
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + ARRAY_DEPS + [
         "@com_google_absl//absl/container:flat_hash_map",
     ] + if_cuda_or_rocm([
         ":gpu_prim_hdrs",
@@ -1283,7 +1283,7 @@ tf_kernel_library(
         "where_op_gpu_impl_7.cu.cc",
         "where_op_gpu_impl_8.cu.cc",
     ],
-    deps = if_cuda([
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + if_cuda([
                "//tensorflow/core/util:cuda_solvers",
            ]) + if_rocm([
                "//tensorflow/core/util:rocm_solvers",
@@ -2730,7 +2730,7 @@ tf_kernel_library(
     name = "dynamic_partition_op",
     features = if_cuda(["-layering_check"]),
     prefix = "dynamic_partition_op",
-    deps = DYNAMIC_DEPS + [
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + DYNAMIC_DEPS + [
         ":fill_functor",
         ":gather_functor",
         ":gpu_prim_hdrs",
@@ -2943,7 +2943,7 @@ tf_kernel_library(
     srcs = ["resource_variable_ops.cc"],
     hdrs = ["resource_variable_ops.h"],
     features = ["-layering_check"],
-    deps = [
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + [
         ":dense_update_functor",
         ":gather_functor",
         ":gather_nd_op",
@@ -5124,7 +5124,7 @@ tf_kernel_library(
     name = "fill_empty_rows_functor",
     features = if_cuda(["-layering_check"]),
     prefix = "fill_empty_rows_functor",
-    deps = [
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + [
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
     ] + [":gpu_prim_hdrs"] + if_cuda_or_rocm([
@@ -5201,7 +5201,7 @@ tf_kernel_library(
     name = "sparse_slice_op",
     features = if_cuda(["-layering_check"]),
     prefix = "sparse_slice_op",
-    deps = SPARSE_DEPS + if_cuda_or_rocm([
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + SPARSE_DEPS + if_cuda_or_rocm([
         ":gpu_device_array",
         ":gpu_prim_helpers",
     ]) + if_cuda([
@@ -5257,7 +5257,7 @@ tf_kernel_library(
     name = "sparse_to_dense_op",
     features = ["-layering_check"],
     prefix = "sparse_to_dense_op",
-    deps = SPARSE_DEPS + [
+    deps = if_cuda_or_rocm(["//tensorflow/core/common_runtime/gpu:gpu_lib"]) + SPARSE_DEPS + [
         ":loose_headers",
         "@eigen_archive//:eigen3",
     ] + if_cuda_or_rocm([
