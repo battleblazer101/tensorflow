@@ -270,6 +270,7 @@ tf_kernel_library(
         "gpu_device_array_gpu.h",
     ],
     deps = [
+        ":gpu_device_array",
         ":loose_headers",
         "//tensorflow/core:framework",
         "//tensorflow/core:framework_internal",
@@ -3650,7 +3651,7 @@ tf_kernel_library(
     features = if_cuda(["-layering_check"]),
     gpu_srcs = ["gpu_device_array.h"],
     prefix = "bucketize_op",
-    deps = ARRAY_DEPS,
+    deps = ARRAY_DEPS + [":gpu_device_array"],
 )
 
 tf_kernel_library(
