@@ -82,9 +82,9 @@ __device__ EIGEN_STRONG_INLINE bool OverThreshold(const Box* a, const Box* b,
   const float xx2 = __builtin_fminf(a->x2, b->x2);
   const float yy2 = __builtin_fminf(a->y2, b->y2);
 
-  // fdimf computes the positive difference between xx2+1 and xx1.
-  const float w = __builtin_fdimf(xx2, xx1);
-  const float h = __builtin_fdimf(yy2, yy1);
+  // Compute positive overlap extents without emitting device calls to fdimf.
+  const float w = xx2 > xx1 ? xx2 - xx1 : 0.0f;
+  const float h = yy2 > yy1 ? yy2 - yy1 : 0.0f;
   const float intersection = w * h;
 
   // Testing for aa/bb > t
