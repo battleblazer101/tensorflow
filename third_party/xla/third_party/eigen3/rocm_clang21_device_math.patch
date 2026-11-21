@@ -85,7 +85,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 --- a/Eigen/src/Core/MathFunctions.h
 +++ b/Eigen/src/Core/MathFunctions.h
-@@ -20,6 +20,10 @@
+@@ -21,4 +21,8 @@
  // IWYU pragma: private
  #include "./InternalHeaderCheck.h"
  
