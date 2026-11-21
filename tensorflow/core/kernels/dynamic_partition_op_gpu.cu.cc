@@ -67,7 +67,8 @@ __global__ void RangeInitKernel(const T start, const T delta, const int32 size,
 __global__ void MoveValuesKernel(const int32* keys, const int32* values,
                                  const int32* size, int32 out_size,
                                  int32* out) {
-  int32 N = min(ldg(size), out_size);
+  const int32 num_runs = ldg(size);
+  int32 N = num_runs < out_size ? num_runs : out_size;
   GPU_1D_KERNEL_LOOP(i, N) {
     int32 key = ldg(keys + i);
     int32 value = ldg(values + i);
