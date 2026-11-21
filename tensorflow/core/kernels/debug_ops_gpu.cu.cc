@@ -33,6 +33,16 @@ namespace {
 
 typedef Eigen::GpuDevice GPUDevice;
 
+// Clang 21 HIP device linking cannot resolve Eigen's isinf/isnan calls.
+// Use compiler builtins for ROCm while preserving the CUDA path.
+#if TENSORFLOW_USE_ROCM
+#define TF_DEBUG_ISINF(x) __builtin_isinf(static_cast<double>(x))
+#define TF_DEBUG_ISNAN(x) __builtin_isnan(static_cast<double>(x))
+#else
+#define TF_DEBUG_ISINF(x) Eigen::numext::isinf(x)
+#define TF_DEBUG_ISNAN(x) Eigen::numext::isnan(x)
+#endif
+
 // A CUDA kernel that fills the second element of a vector according
 // to whether any of the input data contains infinity or NaN.
 template <typename Tin, typename Tout>
@@ -43,8 +53,8 @@ __global__ void CurtHealthKernel(const Tin* __restrict__ data, int size,
 
   int32 offset = thread_id;
   while (offset < size) {
-    if (Eigen::numext::isinf(data[offset]) ||
-        Eigen::numext::isnan(data[offset])) {
+    if (TF_DEBUG_ISINF(data[offset]) ||
+        TF_DEBUG_ISNAN(data[offset])) {
       output[0] = 1.0;
     }
     offset += total_thread_count;
@@ -63,14 +73,14 @@ __global__ void ConciseHealthKernel(const Tin* __restrict__ data, int size,
   Tout accum[3] = {0.0, 0.0, 0.0};
 
   while (offset < size) {
-    if (Eigen::numext::isinf(data[offset])) {
+    if (TF_DEBUG_ISINF(data[offset])) {
       if (data[offset] < static_cast<Tin>(0.f)) {
         ++accum[0];
       } else {
         ++accum[1];
       }
     }
-    if (Eigen::numext::isnan(data[offset])) {
+    if (TF_DEBUG_ISNAN(data[offset])) {
       ++accum[2];
     }
     offset += total_thread_count;
@@ -94,13 +104,13 @@ __global__ void FullHealthKernel(const Tin* __restrict__ data, int size,
   Tout accum[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   while (offset < size) {
-    if (Eigen::numext::isinf(data[offset])) {
+    if (TF_DEBUG_ISINF(data[offset])) {
       if (data[offset] < static_cast<Tin>(0.f)) {
         ++accum[0];
       } else {
         ++accum[1];
       }
-    } else if (Eigen::numext::isnan(data[offset])) {
+    } else if (TF_DEBUG_ISNAN(data[offset])) {
       ++accum[2];
     } else {
       if (data[offset] < static_cast<Tin>(0.f)) {
@@ -136,14 +146,14 @@ __global__ void ReduceInfNanThreeSlotsKernel(const Tin* __restrict__ data,
   int32 offset = thread_id;
 
   while (offset < size) {
-    if (Eigen::numext::isinf(data[offset])) {
+    if (TF_DEBUG_ISINF(data[offset])) {
       if (data[offset] < static_cast<Tin>(0.f)) {
         output[0] = -std::numeric_limits<Tout>::infinity();
       } else {
         output[1] = std::numeric_limits<Tout>::infinity();
       }
     }
-    if (Eigen::numext::isnan(data[offset])) {
+    if (TF_DEBUG_ISNAN(data[offset])) {
       output[2] = std::numeric_limits<Tout>::quiet_NaN();
     }
     offset += total_thread_count;
@@ -248,6 +258,9 @@ template struct ReduceInfNanThreeSlotsLaunch<float, double>;
 template struct ReduceInfNanThreeSlotsLaunch<double, double>;
 template struct ReduceInfNanThreeSlotsLaunch<int16, double>;
 template struct ReduceInfNanThreeSlotsLaunch<int32, double>;
+
+#undef TF_DEBUG_ISINF
+#undef TF_DEBUG_ISNAN
 
 }  // namespace tensorflow
 #endif  // GOOGLE_CUDA || TENSORFLOW_USE_ROCM
