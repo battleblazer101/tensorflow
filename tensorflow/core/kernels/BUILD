@@ -273,6 +273,7 @@ tf_kernel_library(
         ":loose_headers",
         "//tensorflow/core:framework",
         "//tensorflow/core:framework_internal",
+        "//tensorflow/core/platform:stream_executor",
         "//tensorflow/core/framework:bounds_check",
         "@eigen_archive//:eigen3",
     ],
