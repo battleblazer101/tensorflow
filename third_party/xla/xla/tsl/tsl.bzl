@@ -378,7 +378,7 @@ def tsl_gpu_library(deps = None, cuda_deps = None, copts = tsl_copts(), **kwargs
         cuda_deps = []
 
     kwargs["features"] = kwargs.get("features", []) + ["-use_header_modules"]
-    deps = deps + if_cuda_or_rocm(cuda_deps)
+    deps = deps + if_cuda(cuda_deps)
     if "default_copts" in kwargs:
         copts = kwargs["default_copts"] + copts
         kwargs.pop("default_copts", None)
