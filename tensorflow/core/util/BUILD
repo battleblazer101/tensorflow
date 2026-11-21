@@ -748,6 +748,9 @@ tf_kernel_library(
         "@local_xla//xla/stream_executor/rocm:rocm_executor",
         "@local_xla//xla/stream_executor/rocm:rocsolver_wrapper",
     ] + if_rocm([
+        "//tensorflow/core/common_runtime/gpu:gpu_lib",
+        "//tensorflow/core/platform:stream_executor",
+        "@local_xla//xla/stream_executor:platform_manager",
         "@local_config_rocm//rocm:rocprim",
     ]),
 )
@@ -771,6 +774,9 @@ tf_kernel_library(
         "@local_xla//xla/tsl/cuda:cusparse",
         "@local_config_cuda//cuda:cub_headers",
     ]) + if_rocm([
+        "//tensorflow/core/common_runtime/gpu:gpu_lib",
+        "//tensorflow/core/platform:stream_executor",
+        "@local_xla//xla/stream_executor:platform_manager",
         ":rocm_solvers",
         "@local_xla//xla/stream_executor/rocm:rocsolver_wrapper",
         "@local_xla//xla/stream_executor/rocm:hipsolver_wrapper",
