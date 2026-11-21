@@ -1,1 +1,3 @@
 # DUCC FFT library (https://gitlab.mpcdf.mpg.de/mtr/ducc).
+
+exports_files(["gcc15-compat.patch"])

@@ -1,0 +1,38 @@
+--- a/src/ducc0/infra/mav.h
++++ b/src/ducc0/infra/mav.h
+@@ -615,7 +615,7 @@
+       : cfmav<T>(info, d_, buf) {}
+ 
+   public:
+-    using tbuf::raw, tbuf::data, tinfo::ndim;
++    using tbuf::data, tinfo::ndim;
+     vfmav() {}
+     vfmav(T *d_, const fmav_info &info)
+       : cfmav<T>(d_, info) {}
+@@ -653,7 +653,7 @@
+       cmembuf<T>::assign(other);
+       }
+ 
+-    using cfmav<T>::operator();
++    // GCC 15 compatibility: hide inherited operator().
+     template<typename... Ns> T &operator()(Ns... ns) const
+       { return raw(idx(ns...)); }
+     T &operator()(const shape_t &ns) const
+@@ -813,7 +813,7 @@
+   public:
+     using typename tinfo::shape_t;
+     using typename tinfo::stride_t;
+-    using tbuf::raw, tbuf::data;
++    using tbuf::data;
+     using tinfo::contiguous, tinfo::size, tinfo::idx, tinfo::conformable;
+ 
+   protected:
+@@ -852,7 +852,7 @@
+     using cmav<T, ndim>::to_fmav;
+     vfmav<T> to_fmav() const { return operator vfmav<T>(); }
+ 
+-    using parent::operator();
++    // GCC 15 compatibility: hide inherited operator().
+     template<typename... Ns> T &operator()(Ns... ns) const
+       { return const_cast<T &>(parent::operator()(ns...)); }
+ 
