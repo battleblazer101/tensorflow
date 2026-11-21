@@ -120,7 +120,8 @@ class GpuKernelToBlobPass
           tensorflow::se::RocmComputeCapability{arch_str}, options,
           options.DebugString());
       if (!hsaco_or.ok()) {
-        return tensorflow::errors::Internal("Failure when generating HSACO");
+        return tensorflow::errors::Internal("Failure when generating HSACO: ",
+                                            hsaco_or.status().message());
       }
       auto hsaco = hsaco_or.value();
       images.push_back({arch_str, std::move(hsaco)});
