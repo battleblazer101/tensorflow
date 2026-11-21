@@ -2740,7 +2740,10 @@ tf_kernel_library(
         "gpu_device_array_gpu.h",
     ],
     prefix = "dynamic_stitch_op",
-    deps = DYNAMIC_DEPS + [":loose_headers"],
+    deps = DYNAMIC_DEPS + [
+        ":gpu_device_array",
+        ":loose_headers",
+    ],
 )
 
 cc_library(
