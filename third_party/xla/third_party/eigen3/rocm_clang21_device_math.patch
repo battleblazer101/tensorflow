@@ -1,0 +1,52 @@
+--- a/Eigen/src/Core/arch/GPU/PacketMath.h
++++ b/Eigen/src/Core/arch/GPU/PacketMath.h
+@@ -327,7 +327,7 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmin<float4>(const float4& a, const float4& b) {
+-  return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
++  return make_float4(__builtin_fminf(a.x, b.x), __builtin_fminf(a.y, b.y), __builtin_fminf(a.z, b.z), __builtin_fminf(a.w, b.w));
+ }
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE double2 pmin<double2>(const double2& a, const double2& b) {
+@@ -336,7 +336,7 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmax<float4>(const float4& a, const float4& b) {
+-  return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
++  return make_float4(__builtin_fmaxf(a.x, b.x), __builtin_fmaxf(a.y, b.y), __builtin_fmaxf(a.z, b.z), __builtin_fmaxf(a.w, b.w));
+ }
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE double2 pmax<double2>(const double2& a, const double2& b) {
+@@ -508,7 +508,7 @@
+ template <>
+ EIGEN_DEVICE_FUNC inline float4 pfloor<float4>(const float4& a) {
+-  return make_float4(floorf(a.x), floorf(a.y), floorf(a.z), floorf(a.w));
++  return make_float4(__builtin_floorf(a.x), __builtin_floorf(a.y), __builtin_floorf(a.z), __builtin_floorf(a.w));
+ }
+ template <>
+ EIGEN_DEVICE_FUNC inline double2 pfloor<double2>(const double2& a) {
+--- a/Eigen/src/Core/MathFunctions.h
++++ b/Eigen/src/Core/MathFunctions.h
+@@ -933,7 +933,7 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float mini(const float& x, const float& y) {
+-  return fminf(x, y);
++  return __builtin_fminf(x, y);
+ }
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double mini(const double& x, const double& y) {
+@@ -958,7 +958,7 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float maxi(const float& x, const float& y) {
+-  return fmaxf(x, y);
++  return __builtin_fmaxf(x, y);
+ }
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double maxi(const double& x, const double& y) {
+@@ -1221,7 +1221,7 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float floor(const float& x) {
+-  return ::floorf(x);
++  return __builtin_floorf(x);
+ }
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double floor(const double& x) {
