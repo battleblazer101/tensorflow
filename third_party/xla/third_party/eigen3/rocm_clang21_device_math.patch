@@ -608,14 +608,10 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::sinh(x);
 +#endif
  }
-@@ -1771,4 +2013,12 @@
+@@ -1771,4 +2013,8 @@
  template <>
 -EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
-+#if defined(EIGEN_HIP_DEVICE_COMPILE)
-+EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float ::__ocml_tanh_f64(const float& x) {
-+#else
 +EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
-+#endif
 -  return ::tanhf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_tanh_f32(x);
@@ -623,7 +619,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::tanhf(x);
 +#endif
  }
-@@ -1777,3 +2027,7 @@
+@@ -1777,3 +2023,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double tanh(const double& x) {
 -  return ::tanh(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -632,7 +628,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::tanh(x);
 +#endif
  }
-@@ -1794,3 +2048,7 @@
+@@ -1794,3 +2044,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float fmod(const float& a, const float& b) {
 -  return ::fmodf(a, b);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -641,7 +637,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::fmodf(a, b);
 +#endif
  }
-@@ -1799,3 +2057,7 @@
+@@ -1799,3 +2053,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double fmod(const double& a, const double& b) {
 -  return ::fmod(a, b);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
