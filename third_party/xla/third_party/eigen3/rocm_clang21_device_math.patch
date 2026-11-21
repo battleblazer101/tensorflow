@@ -91,6 +91,12 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
  
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +extern "C" __device__ float __ocml_tanh_f32(float);
+extern "C" __device__ float __ocml_tan_f32(float);
+extern "C" __device__ float __ocml_asin_f32(float);
+extern "C" __device__ float __ocml_acos_f32(float);
+extern "C" __device__ float __ocml_atan_f32(float);
+extern "C" __device__ float __ocml_sinh_f32(float);
+extern "C" __device__ float __ocml_cosh_f32(float);
 +#endif
 +
  namespace Eigen {
@@ -221,46 +227,70 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return __builtin_sinf(x);
  }
  
-@@ -1608,5 +1608,5 @@
+@@ -1608,5 +1608,9 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tan(const float& x) {
 -  return ::tanf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_tan_f32(x);
++#else
 +  return __builtin_tanf(x);
++#endif
  }
  
-@@ -1637,5 +1637,5 @@
+@@ -1637,5 +1637,9 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float acos(const float& x) {
 -  return ::acosf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_acos_f32(x);
++#else
 +  return __builtin_acosf(x);
++#endif
  }
  
-@@ -1666,5 +1666,5 @@
+@@ -1666,5 +1666,9 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float asin(const float& x) {
 -  return ::asinf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_asin_f32(x);
++#else
 +  return __builtin_asinf(x);
++#endif
  }
  
-@@ -1701,5 +1701,5 @@
+@@ -1701,5 +1701,9 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float atan(const float& x) {
 -  return ::atanf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_atan_f32(x);
++#else
 +  return __builtin_atanf(x);
++#endif
  }
  
-@@ -1723,5 +1723,5 @@
+@@ -1723,5 +1723,9 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float cosh(const float& x) {
 -  return ::coshf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_cosh_f32(x);
++#else
 +  return __builtin_coshf(x);
++#endif
  }
  
-@@ -1745,5 +1745,5 @@
+@@ -1745,5 +1745,9 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float sinh(const float& x) {
 -  return ::sinhf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_sinh_f32(x);
++#else
 +  return __builtin_sinhf(x);
++#endif
  }
  
 @@ -1771,5 +1775,9 @@
