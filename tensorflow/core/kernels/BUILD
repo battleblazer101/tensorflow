@@ -496,6 +496,7 @@ cc_library(
     deps = [
         "//tensorflow/core:framework",
         "//tensorflow/core:gpu_headers_lib",
+        "//tensorflow/core/platform:stream_executor",
         "//tensorflow/core:lib",
     ],
 )
