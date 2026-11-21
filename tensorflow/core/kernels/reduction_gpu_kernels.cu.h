@@ -34,6 +34,15 @@ limitations under the License.
 namespace tensorflow {
 namespace functor {
 
+// Integer bounds helpers usable in both host and HIP device compilation.
+__host__ __device__ inline int ReductionIntMin(int a, int b) {
+  return a < b ? a : b;
+}
+
+__host__ __device__ inline int ReductionIntMax(int a, int b) {
+  return a > b ? a : b;
+}
+
 typedef Eigen::GpuDevice GPUDevice;
 
 template <typename T>
@@ -191,7 +200,7 @@ __global__ __launch_bounds__(1024) void BlockReduceKernel(
   // elements: -----------------
   // grid:     |====|====|====|====|====|
   const int num_elements_to_reduce =
-      max(min(static_cast<int>(num_elems - bid * blockDim.x), num_threads), 0);
+      ReductionIntMax(ReductionIntMin(static_cast<int>(num_elems - bid * blockDim.x), num_threads), 0);
 
   sum = BlockReduce(temp_storage).Reduce(sum, op, num_elements_to_reduce);
 
@@ -233,7 +242,7 @@ __global__ __launch_bounds__(1024) void RowReduceKernel(
   __shared__ typename WarpReduce::TempStorage temp_storage;
 
   sum =
-      WarpReduce(temp_storage).Reduce(sum, op, min(num_cols, TF_RED_WARPSIZE));
+      WarpReduce(temp_storage).Reduce(sum, op, ReductionIntMin(num_cols, TF_RED_WARPSIZE));
 
   if (row < num_rows && lane == 0) out[row] = sum;
 }
@@ -309,7 +318,7 @@ __global__ __launch_bounds__(1024) void ColumnReduceMax16ColumnsKernel(
       sum = op(sum, in[row * num_cols + col]);
   }
 
-  const int rows_in_this_warp = min(rows_per_warp, num_rows - start_row_warp);
+  const int rows_in_this_warp = ReductionIntMin(rows_per_warp, num_rows - start_row_warp);
   // not the most efficient way to do this sum
   for (int i = 1; i < rows_in_this_warp; ++i) {
     value_type tmp = gpuprim::ShuffleIndex<TF_RED_WARPSIZE, value_type>(
@@ -389,7 +398,7 @@ __global__ __launch_bounds__(1024) void ColumnReduceKernel(
     //  -         =
     //            =
     const int numRowsThisBlock =
-        min(static_cast<int>(blockDim.y), num_rows - blockIdx.y * blockDim.y);
+        ReductionIntMin(static_cast<int>(blockDim.y), num_rows - blockIdx.y * blockDim.y);
 
     for (int row = 1; row < numRowsThisBlock; ++row) {
       value_type t = partial_sums[threadIdx.x * (TF_RED_WARPSIZE + 1) + row];
@@ -504,7 +513,7 @@ __global__ __launch_bounds__(1024) void ColumnReduceInToTempKernel(
   value_type* out_ = t + temp_out_offset;
 
   const int gid = threadIdx.x + blockIdx.x * blockDim.x;
-  const int num_out_rows = max(1, num_rows / (2 * kUnroll));
+  const int num_out_rows = ReductionIntMax(1, num_rows / (2 * kUnroll));
   const int plane = gid / (num_out_rows * num_cols);
   const int col = gid % (num_out_rows * num_cols);
 
