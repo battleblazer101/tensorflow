@@ -1,3 +1,4 @@
+diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
 --- a/Eigen/src/Core/arch/GPU/PacketMath.h
 +++ b/Eigen/src/Core/arch/GPU/PacketMath.h
 @@ -327,6 +327,6 @@
@@ -24,6 +25,7 @@
  }
  template <>
  EIGEN_DEVICE_FUNC inline double2 pfloor<double2>(const double2& a) {
+diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 --- a/Eigen/src/Core/MathFunctions.h
 +++ b/Eigen/src/Core/MathFunctions.h
 @@ -933,6 +933,6 @@
