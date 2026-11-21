@@ -360,7 +360,8 @@ StatusOr<AutotuneEntry<se::dnn::ConvOp>> AutotuneUnfusedConv(
       return absl::InvalidArgumentError("No DNN in stream executor.");
     }
     if (!dnn->GetMIOpenConvolveAlgorithms(
-            kind, se::dnn::ToDataType<T>::value, stream, input_desc, input_ptr,
+            kind, se::dnn::ToDataType<T>::value,
+            se::dnn::ToDataType<T>::value, stream, input_desc, input_ptr,
             filter_desc, filter_ptr, output_desc, output_ptr, conv_desc,
             &scratch_allocator, &algorithms)) {
       return errors::Unknown(
@@ -376,7 +377,7 @@ StatusOr<AutotuneEntry<se::dnn::ConvOp>> AutotuneUnfusedConv(
       auto& result = results.back();
       *result.mutable_algorithm() = profile_result.algorithm().ToProto();
 
-      result.set_scratch_bytes(profile_result.scratch_size());
+      result.set_scratch_bytes(profile_result.algorithm().workspace_size().value_or(0));
       *result.mutable_run_time() = proto_utils::ToDurationProto(
           absl::Milliseconds(profile_result.elapsed_time_in_ms()));
     } else {
@@ -387,7 +388,7 @@ StatusOr<AutotuneEntry<se::dnn::ConvOp>> AutotuneUnfusedConv(
             stream, kind, input_desc, input_ptr, filter_desc, filter_ptr,
             output_desc, output_ptr, conv_desc, &scratch_allocator,
             se::dnn::AlgorithmConfig(profile_algorithm,
-                                     miopen_algorithm.scratch_size()),
+                                     miopen_algorithm.algorithm().workspace_size().value_or(0)),
             &profile_result);
         if (miopen_launch_status.ok() && profile_result.is_valid()) {
           results.emplace_back();
