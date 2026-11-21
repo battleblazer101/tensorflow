@@ -1,313 +1,652 @@
 diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
 --- a/Eigen/src/Core/arch/GPU/PacketMath.h
 +++ b/Eigen/src/Core/arch/GPU/PacketMath.h
-@@ -328,5 +328,5 @@
- template <>
+@@ -329,3 +329,7 @@
  EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmin<float4>(const float4& a, const float4& b) {
 -  return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return make_float4(__builtin_fminf(a.x, b.x), __builtin_fminf(a.y, b.y), __builtin_fminf(a.z, b.z), __builtin_fminf(a.w, b.w));
++#else
++  return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
++#endif
  }
- template <>
-@@ -337,5 +337,5 @@
- template <>
+@@ -338,3 +342,7 @@
  EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmax<float4>(const float4& a, const float4& b) {
 -  return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return make_float4(__builtin_fmaxf(a.x, b.x), __builtin_fmaxf(a.y, b.y), __builtin_fmaxf(a.z, b.z), __builtin_fmaxf(a.w, b.w));
++#else
++  return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
++#endif
  }
- template <>
-@@ -473,5 +473,5 @@
- template <>
+@@ -474,3 +482,7 @@
  EIGEN_DEVICE_FUNC inline float predux_max<float4>(const float4& a) {
 -  return fmaxf(fmaxf(a.x, a.y), fmaxf(a.z, a.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_fmaxf(__builtin_fmaxf(a.x, a.y), __builtin_fmaxf(a.z, a.w));
++#else
++  return fmaxf(fmaxf(a.x, a.y), fmaxf(a.z, a.w));
++#endif
  }
- template <>
-@@ -482,5 +482,5 @@
- template <>
+@@ -483,3 +495,7 @@
  EIGEN_DEVICE_FUNC inline float predux_min<float4>(const float4& a) {
 -  return fminf(fminf(a.x, a.y), fminf(a.z, a.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_fminf(__builtin_fminf(a.x, a.y), __builtin_fminf(a.z, a.w));
++#else
++  return fminf(fminf(a.x, a.y), fminf(a.z, a.w));
++#endif
  }
- template <>
-@@ -500,5 +500,5 @@
- template <>
+@@ -501,3 +517,7 @@
  EIGEN_DEVICE_FUNC inline float4 pabs<float4>(const float4& a) {
 -  return make_float4(fabsf(a.x), fabsf(a.y), fabsf(a.z), fabsf(a.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return make_float4(__builtin_fabsf(a.x), __builtin_fabsf(a.y), __builtin_fabsf(a.z), __builtin_fabsf(a.w));
++#else
++  return make_float4(fabsf(a.x), fabsf(a.y), fabsf(a.z), fabsf(a.w));
++#endif
  }
- template <>
-@@ -509,5 +509,5 @@
- template <>
+@@ -510,3 +530,7 @@
  EIGEN_DEVICE_FUNC inline float4 pfloor<float4>(const float4& a) {
 -  return make_float4(floorf(a.x), floorf(a.y), floorf(a.z), floorf(a.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return make_float4(__builtin_floorf(a.x), __builtin_floorf(a.y), __builtin_floorf(a.z), __builtin_floorf(a.w));
++#else
++  return make_float4(floorf(a.x), floorf(a.y), floorf(a.z), floorf(a.w));
++#endif
  }
- template <>
-@@ -518,5 +518,5 @@
- template <>
+@@ -519,3 +543,7 @@
  EIGEN_DEVICE_FUNC inline float4 pceil<float4>(const float4& a) {
 -  return make_float4(ceilf(a.x), ceilf(a.y), ceilf(a.z), ceilf(a.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return make_float4(__builtin_ceilf(a.x), __builtin_ceilf(a.y), __builtin_ceilf(a.z), __builtin_ceilf(a.w));
++#else
++  return make_float4(ceilf(a.x), ceilf(a.y), ceilf(a.z), ceilf(a.w));
++#endif
  }
- template <>
-@@ -527,5 +527,5 @@
- template <>
+@@ -528,3 +556,7 @@
  EIGEN_DEVICE_FUNC inline float4 print<float4>(const float4& a) {
 -  return make_float4(rintf(a.x), rintf(a.y), rintf(a.z), rintf(a.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return make_float4(__builtin_rintf(a.x), __builtin_rintf(a.y), __builtin_rintf(a.z), __builtin_rintf(a.w));
++#else
++  return make_float4(rintf(a.x), rintf(a.y), rintf(a.z), rintf(a.w));
++#endif
  }
- template <>
-@@ -536,5 +536,5 @@
- template <>
+@@ -537,3 +569,7 @@
  EIGEN_DEVICE_FUNC inline float4 ptrunc<float4>(const float4& a) {
 -  return make_float4(truncf(a.x), truncf(a.y), truncf(a.z), truncf(a.w));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return make_float4(__builtin_truncf(a.x), __builtin_truncf(a.y), __builtin_truncf(a.z), __builtin_truncf(a.w));
++#else
++  return make_float4(truncf(a.x), truncf(a.y), truncf(a.z), truncf(a.w));
++#endif
  }
- template <>
-@@ -974,6 +974,6 @@
-   float a1 = __low2float(a);
+@@ -975,4 +1011,12 @@
    float a2 = __high2float(a);
 -  float r1 = log1pf(a1);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float r1 = __builtin_log1pf(a1);
++#else
++  float r1 = log1pf(a1);
++#endif
 -  float r2 = log1pf(a2);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float r2 = __builtin_log1pf(a2);
++#else
++  float r2 = log1pf(a2);
++#endif
    return __floats2half2_rn(r1, r2);
- }
-@@ -982,6 +982,6 @@
-   float a1 = __low2float(a);
+@@ -983,4 +1027,12 @@
    float a2 = __high2float(a);
 -  float r1 = expm1f(a1);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float r1 = __builtin_expm1f(a1);
++#else
++  float r1 = expm1f(a1);
++#endif
 -  float r2 = expm1f(a2);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float r2 = __builtin_expm1f(a2);
++#else
++  float r2 = expm1f(a2);
++#endif
    return __floats2half2_rn(r1, r2);
- }
 diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 --- a/Eigen/src/Core/MathFunctions.h
 +++ b/Eigen/src/Core/MathFunctions.h
-@@ -21,4 +21,8 @@
- // IWYU pragma: private
+@@ -21,3 +21,29 @@
  #include "./InternalHeaderCheck.h"
- 
+-
++
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
++extern "C" __device__ float __ocml_acos_f32(float);
++extern "C" __device__ double __ocml_acos_f64(double);
++extern "C" __device__ float __ocml_asin_f32(float);
++extern "C" __device__ double __ocml_asin_f64(double);
++extern "C" __device__ float __ocml_atan_f32(float);
++extern "C" __device__ double __ocml_atan_f64(double);
++extern "C" __device__ double __ocml_cos_f64(double);
++extern "C" __device__ float __ocml_cosh_f32(float);
++extern "C" __device__ double __ocml_cosh_f64(double);
++extern "C" __device__ double __ocml_exp_f64(double);
++extern "C" __device__ double __ocml_exp2_f64(double);
++extern "C" __device__ double __ocml_expm1_f64(double);
++extern "C" __device__ double __ocml_fmod_f64(double, double);
++extern "C" __device__ double __ocml_hypot_f64(double, double);
++extern "C" __device__ double __ocml_log_f64(double);
++extern "C" __device__ double __ocml_log1p_f64(double);
++extern "C" __device__ double __ocml_sin_f64(double);
++extern "C" __device__ float __ocml_sinh_f32(float);
++extern "C" __device__ double __ocml_sinh_f64(double);
++extern "C" __device__ float __ocml_tan_f32(float);
++extern "C" __device__ double __ocml_tan_f64(double);
 +extern "C" __device__ float __ocml_tanh_f32(float);
-extern "C" __device__ float __ocml_tan_f32(float);
-extern "C" __device__ float __ocml_asin_f32(float);
-extern "C" __device__ float __ocml_acos_f32(float);
-extern "C" __device__ float __ocml_atan_f32(float);
-extern "C" __device__ float __ocml_sinh_f32(float);
-extern "C" __device__ float __ocml_cosh_f32(float);
++extern "C" __device__ double __ocml_tanh_f64(double);
 +#endif
 +
  namespace Eigen {
-@@ -935,5 +935,5 @@
- template <>
+@@ -936,3 +962,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float mini(const float& x, const float& y) {
 -  return fminf(x, y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_fminf(x, y);
++#else
++  return fminf(x, y);
++#endif
  }
- template <>
-@@ -960,5 +960,5 @@
- template <>
+@@ -940,3 +970,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double mini(const double& x, const double& y) {
+-  return fmin(x, y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return __builtin_fmin(x, y);
++#else
++  return fmin(x, y);
++#endif
+ }
+@@ -961,3 +995,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float maxi(const float& x, const float& y) {
 -  return fmaxf(x, y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_fmaxf(x, y);
++#else
++  return fmaxf(x, y);
++#endif
  }
- template <>
-@@ -1108,5 +1108,5 @@
- template <>
+@@ -965,3 +1003,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double maxi(const double& x, const double& y) {
+-  return fmax(x, y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return __builtin_fmax(x, y);
++#else
++  return fmax(x, y);
++#endif
+ }
+@@ -1109,3 +1151,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float absdiff(const float& x, const float& y) {
 -  return fabsf(x - y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_fabsf(x - y);
++#else
++  return fabsf(x - y);
++#endif
  }
- template <>
-@@ -1149,5 +1149,5 @@
- template <>
+@@ -1113,3 +1159,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double absdiff(const double& x, const double& y) {
+-  return fabs(x - y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return __builtin_fabs(x - y);
++#else
++  return fabs(x - y);
++#endif
+ }
+@@ -1150,3 +1200,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float log1p(const float& x) {
 -  return ::log1pf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_log1pf(x);
++#else
++  return ::log1pf(x);
++#endif
  }
- 
-@@ -1222,5 +1222,5 @@
- template <>
+@@ -1155,3 +1209,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double log1p(const double& x) {
+-  return ::log1p(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_log1p_f64(x);
++#else
++  return ::log1p(x);
++#endif
+ }
+@@ -1223,3 +1281,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float floor(const float& x) {
 -  return ::floorf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_floorf(x);
++#else
++  return ::floorf(x);
++#endif
  }
- template <>
-@@ -1230,5 +1230,5 @@
- template <>
+@@ -1227,3 +1289,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double floor(const double& x) {
+-  return ::floor(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return __builtin_floor(x);
++#else
++  return ::floor(x);
++#endif
+ }
+@@ -1231,3 +1297,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float ceil(const float& x) {
 -  return ::ceilf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_ceilf(x);
++#else
++  return ::ceilf(x);
++#endif
  }
- template <>
-@@ -1238,5 +1238,5 @@
- template <>
+@@ -1235,3 +1305,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double ceil(const double& x) {
+-  return ::ceil(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return __builtin_ceil(x);
++#else
++  return ::ceil(x);
++#endif
+ }
+@@ -1239,3 +1313,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float trunc(const float& x) {
 -  return ::truncf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_truncf(x);
++#else
++  return ::truncf(x);
++#endif
  }
- template <>
-@@ -1336,5 +1336,5 @@
- template <>
+@@ -1243,3 +1321,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double trunc(const double& x) {
+-  return ::trunc(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return __builtin_trunc(x);
++#else
++  return ::trunc(x);
++#endif
+ }
+@@ -1337,3 +1419,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float log(const float& x) {
 -  return ::logf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_logf(x);
++#else
++  return ::logf(x);
++#endif
  }
- 
-@@ -1368,5 +1368,5 @@
- template <>
+@@ -1342,3 +1428,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double log(const double& x) {
+-  return ::log(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_log_f64(x);
++#else
++  return ::log(x);
++#endif
+ }
+@@ -1369,3 +1459,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float abs(const float& x) {
 -  return ::fabsf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_fabsf(x);
++#else
++  return ::fabsf(x);
++#endif
  }
- 
-@@ -1378,5 +1378,5 @@
- template <>
+@@ -1374,3 +1468,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double abs(const double& x) {
+-  return ::fabs(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return __builtin_fabs(x);
++#else
++  return ::fabs(x);
++#endif
+ }
+@@ -1379,3 +1477,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float abs(const std::complex<float>& x) {
 -  return ::hypotf(x.real(), x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_hypotf(x.real(), x.imag());
++#else
++  return ::hypotf(x.real(), x.imag());
++#endif
  }
- 
-@@ -1448,5 +1448,5 @@
- template <>
+@@ -1384,3 +1486,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double abs(const std::complex<double>& x) {
+-  return ::hypot(x.real(), x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_hypot_f64(x.real(), x.imag());
++#else
++  return ::hypot(x.real(), x.imag());
++#endif
+ }
+@@ -1449,3 +1555,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float exp(const float& x) {
 -  return ::expf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_expf(x);
++#else
++  return ::expf(x);
++#endif
  }
- 
-@@ -1458,7 +1458,7 @@
- template <>
+@@ -1454,3 +1564,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double exp(const double& x) {
+-  return ::exp(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_exp_f64(x);
++#else
++  return ::exp(x);
++#endif
+ }
+@@ -1459,5 +1573,17 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<float> exp(const std::complex<float>& x) {
 -  float com = ::expf(x.real());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float com = __builtin_expf(x.real());
++#else
++  float com = ::expf(x.real());
++#endif
 -  float res_real = com * ::cosf(x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float res_real = com * __builtin_cosf(x.imag());
++#else
++  float res_real = com * ::cosf(x.imag());
++#endif
 -  float res_imag = com * ::sinf(x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float res_imag = com * __builtin_sinf(x.imag());
++#else
++  float res_imag = com * ::sinf(x.imag());
++#endif
    return std::complex<float>(res_real, res_imag);
- }
-@@ -1505,5 +1505,5 @@
- template <>
+@@ -1467,5 +1593,17 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<double> exp(const std::complex<double>& x) {
+-  double com = ::exp(x.real());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  double com = ::__ocml_exp_f64(x.real());
++#else
++  double com = ::exp(x.real());
++#endif
+-  double res_real = com * ::cos(x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  double res_real = com * ::__ocml_cos_f64(x.imag());
++#else
++  double res_real = com * ::cos(x.imag());
++#endif
+-  double res_imag = com * ::sin(x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  double res_imag = com * ::__ocml_sin_f64(x.imag());
++#else
++  double res_imag = com * ::sin(x.imag());
++#endif
+   return std::complex<double>(res_real, res_imag);
+@@ -1506,3 +1644,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float exp2(const float& x) {
 -  return ::exp2f(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_exp2f(x);
++#else
++  return ::exp2f(x);
++#endif
  }
- 
-@@ -1515,7 +1515,7 @@
- template <>
+@@ -1511,3 +1653,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double exp2(const double& x) {
+-  return ::exp2(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_exp2_f64(x);
++#else
++  return ::exp2(x);
++#endif
+ }
+@@ -1516,5 +1662,17 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<float> exp2(const std::complex<float>& x) {
 -  float com = ::exp2f(x.real());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float com = __builtin_exp2f(x.real());
++#else
++  float com = ::exp2f(x.real());
++#endif
 -  float res_real = com * ::cosf(static_cast<float>(EIGEN_LN2) * x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float res_real = com * __builtin_cosf(static_cast<float>(EIGEN_LN2) * x.imag());
++#else
++  float res_real = com * ::cosf(static_cast<float>(EIGEN_LN2) * x.imag());
++#endif
 -  float res_imag = com * ::sinf(static_cast<float>(EIGEN_LN2) * x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  float res_imag = com * __builtin_sinf(static_cast<float>(EIGEN_LN2) * x.imag());
++#else
++  float res_imag = com * ::sinf(static_cast<float>(EIGEN_LN2) * x.imag());
++#endif
    return std::complex<float>(res_real, res_imag);
- }
-@@ -1542,5 +1542,5 @@
- template <>
+@@ -1524,5 +1682,17 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<double> exp2(const std::complex<double>& x) {
+-  double com = ::exp2(x.real());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  double com = ::__ocml_exp2_f64(x.real());
++#else
++  double com = ::exp2(x.real());
++#endif
+-  double res_real = com * ::cos(static_cast<double>(EIGEN_LN2) * x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  double res_real = com * ::__ocml_cos_f64(static_cast<double>(EIGEN_LN2) * x.imag());
++#else
++  double res_real = com * ::cos(static_cast<double>(EIGEN_LN2) * x.imag());
++#endif
+-  double res_imag = com * ::sin(static_cast<double>(EIGEN_LN2) * x.imag());
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  double res_imag = com * ::__ocml_sin_f64(static_cast<double>(EIGEN_LN2) * x.imag());
++#else
++  double res_imag = com * ::sin(static_cast<double>(EIGEN_LN2) * x.imag());
++#endif
+   return std::complex<double>(res_real, res_imag);
+@@ -1543,3 +1713,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float expm1(const float& x) {
 -  return ::expm1f(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_expm1f(x);
++#else
++  return ::expm1f(x);
++#endif
  }
- 
-@@ -1564,5 +1564,5 @@
- template <>
+@@ -1548,3 +1722,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double expm1(const double& x) {
+-  return ::expm1(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_expm1_f64(x);
++#else
++  return ::expm1(x);
++#endif
+ }
+@@ -1565,3 +1743,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float cos(const float& x) {
 -  return ::cosf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_cosf(x);
++#else
++  return ::cosf(x);
++#endif
  }
- 
-@@ -1586,5 +1586,5 @@
- template <>
+@@ -1570,3 +1752,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double cos(const double& x) {
+-  return ::cos(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_cos_f64(x);
++#else
++  return ::cos(x);
++#endif
+ }
+@@ -1587,3 +1773,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float sin(const float& x) {
 -  return ::sinf(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_sinf(x);
++#else
++  return ::sinf(x);
++#endif
  }
- 
-@@ -1608,5 +1608,9 @@
- template <>
+@@ -1592,3 +1782,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double sin(const double& x) {
+-  return ::sin(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_sin_f64(x);
++#else
++  return ::sin(x);
++#endif
+ }
+@@ -1609,3 +1803,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tan(const float& x) {
 -  return ::tanf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_tan_f32(x);
 +#else
-+  return __builtin_tanf(x);
++  return ::tanf(x);
 +#endif
  }
- 
-@@ -1637,5 +1637,9 @@
- template <>
+@@ -1614,3 +1812,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double tan(const double& x) {
+-  return ::tan(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_tan_f64(x);
++#else
++  return ::tan(x);
++#endif
+ }
+@@ -1638,3 +1840,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float acos(const float& x) {
 -  return ::acosf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_acos_f32(x);
 +#else
-+  return __builtin_acosf(x);
++  return ::acosf(x);
 +#endif
  }
- 
-@@ -1666,5 +1666,9 @@
- template <>
+@@ -1643,3 +1849,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double acos(const double& x) {
+-  return ::acos(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_acos_f64(x);
++#else
++  return ::acos(x);
++#endif
+ }
+@@ -1667,3 +1877,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float asin(const float& x) {
 -  return ::asinf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_asin_f32(x);
 +#else
-+  return __builtin_asinf(x);
++  return ::asinf(x);
 +#endif
  }
- 
-@@ -1701,5 +1701,9 @@
- template <>
+@@ -1672,3 +1886,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double asin(const double& x) {
+-  return ::asin(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_asin_f64(x);
++#else
++  return ::asin(x);
++#endif
+ }
+@@ -1702,3 +1920,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float atan(const float& x) {
 -  return ::atanf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_atan_f32(x);
 +#else
-+  return __builtin_atanf(x);
++  return ::atanf(x);
 +#endif
  }
- 
-@@ -1723,5 +1723,9 @@
- template <>
+@@ -1707,3 +1929,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double atan(const double& x) {
+-  return ::atan(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_atan_f64(x);
++#else
++  return ::atan(x);
++#endif
+ }
+@@ -1724,3 +1950,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float cosh(const float& x) {
 -  return ::coshf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_cosh_f32(x);
 +#else
-+  return __builtin_coshf(x);
++  return ::coshf(x);
 +#endif
  }
- 
-@@ -1745,5 +1745,9 @@
- template <>
+@@ -1729,3 +1959,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double cosh(const double& x) {
+-  return ::cosh(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_cosh_f64(x);
++#else
++  return ::cosh(x);
++#endif
+ }
+@@ -1746,3 +1980,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float sinh(const float& x) {
 -  return ::sinhf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_sinh_f32(x);
 +#else
-+  return __builtin_sinhf(x);
++  return ::sinhf(x);
 +#endif
  }
- 
-@@ -1771,5 +1775,9 @@
+@@ -1751,3 +1989,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double sinh(const double& x) {
+-  return ::sinh(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_sinh_f64(x);
++#else
++  return ::sinh(x);
++#endif
+ }
+@@ -1771,4 +2013,12 @@
  template <>
- EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
+-EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float ::__ocml_tanh_f64(const float& x) {
++#else
++EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
++#endif
 -  return ::tanhf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return ::__ocml_tanh_f32(x);
 +#else
-+  return __builtin_tanhf(x);
++  return ::tanhf(x);
 +#endif
  }
- 
-@@ -1793,5 +1793,5 @@
- template <>
+@@ -1777,3 +2027,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double tanh(const double& x) {
+-  return ::tanh(x);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_tanh_f64(x);
++#else
++  return ::tanh(x);
++#endif
+ }
+@@ -1794,3 +2048,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float fmod(const float& a, const float& b) {
 -  return ::fmodf(a, b);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return __builtin_fmodf(a, b);
++#else
++  return ::fmodf(a, b);
++#endif
  }
- 
+@@ -1799,3 +2057,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double fmod(const double& a, const double& b) {
+-  return ::fmod(a, b);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_fmod_f64(a, b);
++#else
++  return ::fmod(a, b);
++#endif
+ }
