@@ -197,6 +197,7 @@ tf_kernel_library(
         "//tensorflow/core:framework_internal",
         "//tensorflow/core/util:determinism_for_kernels",
     ] + if_cuda_or_rocm([
+        "//tensorflow/core/common_runtime/gpu:gpu_lib",
         "//tensorflow/core/platform:stream_executor",
     ]),
 )
