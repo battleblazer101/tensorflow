@@ -80,6 +80,9 @@ struct NumericTraits<tensorflow::bfloat16>
 #include "rocm/rocm_config.h"
 namespace gpuprim = ::hipcub;
 
+// Older rocPRIM releases required internal codec specializations. ROCm 7.x
+// removed these internal templates; rely on rocPRIM/hipCUB native codecs.
+#if TF_ROCM_VERSION < 70000
 // Required for sorting Eigen::half and bfloat16.
 namespace rocprim {
 namespace detail {
@@ -108,6 +111,7 @@ struct radix_key_codec_base<tensorflow::bfloat16>
     : radix_key_codec_floating<tensorflow::bfloat16, uint16_t> {};
 };  // namespace detail
 };  // namespace rocprim
+#endif  // TF_ROCM_VERSION < 70000
 
 #endif  // TENSORFLOW_USE_ROCM
 
