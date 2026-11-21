@@ -939,13 +939,13 @@ __device__ inline tensorflow::uint64 GpuAtomicMin(tensorflow::uint64* ptr,
                                                   tensorflow::uint64 value) {
   return detail::GpuAtomicCasHelper(
       detail::ToCudaSupportedPtr(ptr),
-      [value](tensorflow::uint64 a) { return min(a, value); });
+      [value](tensorflow::uint64 a) { return a < value ? a : value; });
 }
 
 __device__ inline int64_t GpuAtomicMin(int64_t* ptr, int64_t value) {
   return detail::GpuAtomicCasHelper(
       detail::ToCudaSupportedPtr(ptr),
-      [value](int64_t a) { return min(a, value); });
+      [value](int64_t a) { return a < value ? a : value; });
 }
 #endif
 CREATE_CUDA_DEVICE_FUNCTION_ALIAS(GpuAtomicMin, CudaAtomicMin);
