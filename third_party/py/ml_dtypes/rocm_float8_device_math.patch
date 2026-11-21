@@ -1,6 +1,6 @@
 --- a/ml_dtypes/include/float8.h
 +++ b/ml_dtypes/include/float8.h
-@@ -1410,12 +1410,21 @@
+@@ -1410,12 +1410,25 @@
      const FromBits from_bits =
          Eigen::numext::bit_cast<FromBits>(Eigen::numext::abs(from));
  
