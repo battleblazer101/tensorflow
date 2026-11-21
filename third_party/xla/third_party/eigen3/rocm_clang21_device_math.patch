@@ -1,3 +1,15 @@
+diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Default/BFloat16.h
+--- a/Eigen/src/Core/arch/Default/BFloat16.h
++++ b/Eigen/src/Core/arch/Default/BFloat16.h
+@@ -624,1 +624,7 @@
+-EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sqrt(const bfloat16& a) { return bfloat16(::sqrtf(float(a))); }
++EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sqrt(const bfloat16& a) {
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return bfloat16(::__ocml_sqrt_f32(float(a)));
++#else
++  return bfloat16(::sqrtf(float(a)));
++#endif
++}
 diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
 --- a/Eigen/src/Core/arch/GPU/PacketMath.h
 +++ b/Eigen/src/Core/arch/GPU/PacketMath.h
