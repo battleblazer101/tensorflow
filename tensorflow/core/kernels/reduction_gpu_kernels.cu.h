@@ -51,7 +51,11 @@ struct SqrtOfReal {
   __host__ __device__ T operator()(const T& a) const {
 #if TENSORFLOW_USE_ROCM
     if constexpr (std::is_integral<T>::value) {
-      return T(Eigen::numext::sqrt(static_cast<double>(a)));
+      return T(::__ocml_sqrt_f64(static_cast<double>(a)));
+    } else if constexpr (std::is_same<T, float>::value) {
+      return T(::__ocml_sqrt_f32(a));
+    } else if constexpr (std::is_same<T, double>::value) {
+      return T(::__ocml_sqrt_f64(a));
     } else {
       return T(Eigen::numext::sqrt(Eigen::numext::real(a)));
     }
