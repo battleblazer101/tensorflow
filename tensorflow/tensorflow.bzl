@@ -2087,7 +2087,7 @@ def tf_kernel_library(
         cuda_deps = cuda_deps + gpu_deps,
         linkstatic = 1,  # Needed since alwayslink is broken in bazel b/27630669
         alwayslink = alwayslink,
-        deps = deps,
+        deps = deps + if_rocm(cuda_deps + gpu_deps),
         compatible_with = compatible_with,
         **kwargs
     )
