@@ -3762,6 +3762,7 @@ tf_kernel_library(
         "//tensorflow/core/util:determinism_for_kernels",
     ] + if_cuda_or_rocm([
         ":gpu_prim_helpers",
+        "//tensorflow/core/common_runtime/gpu:gpu_lib",
     ]) + if_cuda([
         "//tensorflow/core/util:cuda_solvers",
     ]) + if_rocm([
