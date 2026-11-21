@@ -11,6 +11,7 @@ def repo():
     ML_DTYPES_SHA256 = "f6e5880666661351e6cd084ac4178ddc4dabcde7e9a73722981c0d1500cf5937"
     tf_http_archive(
         name = "ml_dtypes_py",
+        patch_file = ["//third_party/py/ml_dtypes:rocm_float8_device_math.patch"],
         build_file = "//third_party/py/ml_dtypes:ml_dtypes_py.BUILD",
         link_files = {
             "//third_party/py/ml_dtypes:ml_dtypes.BUILD": "ml_dtypes/BUILD.bazel",
