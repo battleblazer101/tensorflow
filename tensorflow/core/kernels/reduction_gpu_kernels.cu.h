@@ -21,6 +21,7 @@ limitations under the License.
 #define EIGEN_USE_GPU
 
 #include <sstream>
+#include <type_traits>
 
 #include "unsupported/Eigen/CXX11/Tensor"  // from @eigen_archive
 #include "tensorflow/core/kernels/gpu_prim.h"
@@ -48,7 +49,15 @@ typedef Eigen::GpuDevice GPUDevice;
 template <typename T>
 struct SqrtOfReal {
   __host__ __device__ T operator()(const T& a) const {
+#if TENSORFLOW_USE_ROCM
+    if constexpr (std::is_integral<T>::value) {
+      return T(Eigen::numext::sqrt(static_cast<double>(a)));
+    } else {
+      return T(Eigen::numext::sqrt(Eigen::numext::real(a)));
+    }
+#else
     return T(Eigen::numext::sqrt(Eigen::numext::real(a)));
+#endif
   }
 };
 
