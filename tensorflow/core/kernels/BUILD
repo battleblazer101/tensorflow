@@ -7920,6 +7920,7 @@ tf_kernel_library(
     prefix = "sync_ops",
     deps = [
         "//tensorflow/core:framework",
+        "//tensorflow/core/platform:stream_executor",
     ],
 )
 
