@@ -1,70 +1,270 @@
 diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
 --- a/Eigen/src/Core/arch/GPU/PacketMath.h
 +++ b/Eigen/src/Core/arch/GPU/PacketMath.h
-@@ -327,6 +327,6 @@
+@@ -328,5 +328,5 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmin<float4>(const float4& a, const float4& b) {
 -  return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
 +  return make_float4(__builtin_fminf(a.x, b.x), __builtin_fminf(a.y, b.y), __builtin_fminf(a.z, b.z), __builtin_fminf(a.w, b.w));
  }
  template <>
- EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE double2 pmin<double2>(const double2& a, const double2& b) {
-@@ -336,6 +336,6 @@
+@@ -337,5 +337,5 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmax<float4>(const float4& a, const float4& b) {
 -  return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
 +  return make_float4(__builtin_fmaxf(a.x, b.x), __builtin_fmaxf(a.y, b.y), __builtin_fmaxf(a.z, b.z), __builtin_fmaxf(a.w, b.w));
  }
  template <>
- EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE double2 pmax<double2>(const double2& a, const double2& b) {
-@@ -508,6 +508,6 @@
+@@ -473,5 +473,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC inline float predux_max<float4>(const float4& a) {
+-  return fmaxf(fmaxf(a.x, a.y), fmaxf(a.z, a.w));
++  return __builtin_fmaxf(__builtin_fmaxf(a.x, a.y), __builtin_fmaxf(a.z, a.w));
+ }
+ template <>
+@@ -482,5 +482,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC inline float predux_min<float4>(const float4& a) {
+-  return fminf(fminf(a.x, a.y), fminf(a.z, a.w));
++  return __builtin_fminf(__builtin_fminf(a.x, a.y), __builtin_fminf(a.z, a.w));
+ }
+ template <>
+@@ -500,5 +500,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC inline float4 pabs<float4>(const float4& a) {
+-  return make_float4(fabsf(a.x), fabsf(a.y), fabsf(a.z), fabsf(a.w));
++  return make_float4(__builtin_fabsf(a.x), __builtin_fabsf(a.y), __builtin_fabsf(a.z), __builtin_fabsf(a.w));
+ }
+ template <>
+@@ -509,5 +509,5 @@
  template <>
  EIGEN_DEVICE_FUNC inline float4 pfloor<float4>(const float4& a) {
 -  return make_float4(floorf(a.x), floorf(a.y), floorf(a.z), floorf(a.w));
 +  return make_float4(__builtin_floorf(a.x), __builtin_floorf(a.y), __builtin_floorf(a.z), __builtin_floorf(a.w));
  }
  template <>
- EIGEN_DEVICE_FUNC inline double2 pfloor<double2>(const double2& a) {
+@@ -518,5 +518,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC inline float4 pceil<float4>(const float4& a) {
+-  return make_float4(ceilf(a.x), ceilf(a.y), ceilf(a.z), ceilf(a.w));
++  return make_float4(__builtin_ceilf(a.x), __builtin_ceilf(a.y), __builtin_ceilf(a.z), __builtin_ceilf(a.w));
+ }
+ template <>
+@@ -527,5 +527,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC inline float4 print<float4>(const float4& a) {
+-  return make_float4(rintf(a.x), rintf(a.y), rintf(a.z), rintf(a.w));
++  return make_float4(__builtin_rintf(a.x), __builtin_rintf(a.y), __builtin_rintf(a.z), __builtin_rintf(a.w));
+ }
+ template <>
+@@ -536,5 +536,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC inline float4 ptrunc<float4>(const float4& a) {
+-  return make_float4(truncf(a.x), truncf(a.y), truncf(a.z), truncf(a.w));
++  return make_float4(__builtin_truncf(a.x), __builtin_truncf(a.y), __builtin_truncf(a.z), __builtin_truncf(a.w));
+ }
+ template <>
+@@ -974,6 +974,6 @@
+   float a1 = __low2float(a);
+   float a2 = __high2float(a);
+-  float r1 = log1pf(a1);
++  float r1 = __builtin_log1pf(a1);
+-  float r2 = log1pf(a2);
++  float r2 = __builtin_log1pf(a2);
+   return __floats2half2_rn(r1, r2);
+ }
+@@ -982,6 +982,6 @@
+   float a1 = __low2float(a);
+   float a2 = __high2float(a);
+-  float r1 = expm1f(a1);
++  float r1 = __builtin_expm1f(a1);
+-  float r2 = expm1f(a2);
++  float r2 = __builtin_expm1f(a2);
+   return __floats2half2_rn(r1, r2);
+ }
 diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 --- a/Eigen/src/Core/MathFunctions.h
 +++ b/Eigen/src/Core/MathFunctions.h
-@@ -933,6 +933,6 @@
+@@ -935,5 +935,5 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float mini(const float& x, const float& y) {
 -  return fminf(x, y);
 +  return __builtin_fminf(x, y);
  }
  template <>
- EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double mini(const double& x, const double& y) {
-@@ -958,6 +958,6 @@
+@@ -960,5 +960,5 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float maxi(const float& x, const float& y) {
 -  return fmaxf(x, y);
 +  return __builtin_fmaxf(x, y);
  }
  template <>
- EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double maxi(const double& x, const double& y) {
-@@ -1221,6 +1221,6 @@
+@@ -1108,5 +1108,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float absdiff(const float& x, const float& y) {
+-  return fabsf(x - y);
++  return __builtin_fabsf(x - y);
+ }
+ template <>
+@@ -1149,5 +1149,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float log1p(const float& x) {
+-  return ::log1pf(x);
++  return __builtin_log1pf(x);
+ }
+ 
+@@ -1222,5 +1222,5 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float floor(const float& x) {
 -  return ::floorf(x);
 +  return __builtin_floorf(x);
  }
  template <>
- EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double floor(const double& x) {
-@@ -1447,6 +1447,6 @@
+@@ -1230,5 +1230,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float ceil(const float& x) {
+-  return ::ceilf(x);
++  return __builtin_ceilf(x);
+ }
+ template <>
+@@ -1238,5 +1238,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float trunc(const float& x) {
+-  return ::truncf(x);
++  return __builtin_truncf(x);
+ }
+ template <>
+@@ -1336,5 +1336,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float log(const float& x) {
+-  return ::logf(x);
++  return __builtin_logf(x);
+ }
+ 
+@@ -1368,5 +1368,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float abs(const float& x) {
+-  return ::fabsf(x);
++  return __builtin_fabsf(x);
+ }
+ 
+@@ -1378,5 +1378,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float abs(const std::complex<float>& x) {
+-  return ::hypotf(x.real(), x.imag());
++  return __builtin_hypotf(x.real(), x.imag());
+ }
+ 
+@@ -1448,5 +1448,5 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float exp(const float& x) {
 -  return ::expf(x);
 +  return __builtin_expf(x);
  }
  
+@@ -1458,7 +1458,7 @@
  template <>
-@@ -1770,6 +1770,6 @@
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<float> exp(const std::complex<float>& x) {
+-  float com = ::expf(x.real());
++  float com = __builtin_expf(x.real());
+-  float res_real = com * ::cosf(x.imag());
++  float res_real = com * __builtin_cosf(x.imag());
+-  float res_imag = com * ::sinf(x.imag());
++  float res_imag = com * __builtin_sinf(x.imag());
+   return std::complex<float>(res_real, res_imag);
+ }
+@@ -1505,5 +1505,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float exp2(const float& x) {
+-  return ::exp2f(x);
++  return __builtin_exp2f(x);
+ }
+ 
+@@ -1515,7 +1515,7 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<float> exp2(const std::complex<float>& x) {
+-  float com = ::exp2f(x.real());
++  float com = __builtin_exp2f(x.real());
+-  float res_real = com * ::cosf(static_cast<float>(EIGEN_LN2) * x.imag());
++  float res_real = com * __builtin_cosf(static_cast<float>(EIGEN_LN2) * x.imag());
+-  float res_imag = com * ::sinf(static_cast<float>(EIGEN_LN2) * x.imag());
++  float res_imag = com * __builtin_sinf(static_cast<float>(EIGEN_LN2) * x.imag());
+   return std::complex<float>(res_real, res_imag);
+ }
+@@ -1542,5 +1542,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float expm1(const float& x) {
+-  return ::expm1f(x);
++  return __builtin_expm1f(x);
+ }
+ 
+@@ -1564,5 +1564,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float cos(const float& x) {
+-  return ::cosf(x);
++  return __builtin_cosf(x);
+ }
+ 
+@@ -1586,5 +1586,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float sin(const float& x) {
+-  return ::sinf(x);
++  return __builtin_sinf(x);
+ }
+ 
+@@ -1608,5 +1608,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tan(const float& x) {
+-  return ::tanf(x);
++  return __builtin_tanf(x);
+ }
+ 
+@@ -1637,5 +1637,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float acos(const float& x) {
+-  return ::acosf(x);
++  return __builtin_acosf(x);
+ }
+ 
+@@ -1666,5 +1666,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float asin(const float& x) {
+-  return ::asinf(x);
++  return __builtin_asinf(x);
+ }
+ 
+@@ -1701,5 +1701,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float atan(const float& x) {
+-  return ::atanf(x);
++  return __builtin_atanf(x);
+ }
+ 
+@@ -1723,5 +1723,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float cosh(const float& x) {
+-  return ::coshf(x);
++  return __builtin_coshf(x);
+ }
+ 
+@@ -1745,5 +1745,5 @@
+ template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float sinh(const float& x) {
+-  return ::sinhf(x);
++  return __builtin_sinhf(x);
+ }
+ 
+@@ -1771,5 +1771,5 @@
  template <>
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
 -  return ::tanhf(x);
 +  return __builtin_tanhf(x);
  }
  
+@@ -1793,5 +1793,5 @@
  template <>
+ EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float fmod(const float& a, const float& b) {
+-  return ::fmodf(a, b);
++  return __builtin_fmodf(a, b);
+ }
+ 
