@@ -3622,12 +3622,12 @@ cc_library(
         "@com_google_absl//absl/container:flat_hash_map",
         "@local_xla//xla:status_macros",
         "@local_xla//xla:xla_data_proto_cc",
-        "@local_xla//xla/stream_executor/cuda:cublas_plugin",
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
         "//tensorflow/core/platform:tensor_float_32_hdr_lib",
         "//tensorflow/core/util:env_var",
     ]) + if_cuda([
+        "@local_xla//xla/stream_executor/cuda:cublas_plugin",
         "@local_xla//xla/stream_executor/cuda:cublas_lt_header",
     ]) + if_rocm([
         "@local_xla//xla/stream_executor/rocm:hipblas_lt_header",

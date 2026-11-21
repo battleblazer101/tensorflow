@@ -195,6 +195,7 @@ def InvokeHipcc(argv, log=False):
   # Otherwise, we get build error.
   # Also we need to retain warning about uninitialised shared variable as
   # warning only, even when -Werror option is specified.
+  hipccopts += ' --include=external/local_config_rocm/rocm/rocm_dist/tf_hip_clang21_compat.h '
   hipccopts += ' --include=hip/hip_runtime.h '
   # Force C++17 dialect (note, everything in just one string!)
   hipccopts += ' --std=c++17 '

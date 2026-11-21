@@ -762,15 +762,16 @@ tf_kernel_library(
     compatible_with = [],
     features = ["-layering_check"],
     deps = [
-        ":cuda_solvers",
         "//tensorflow/core:framework",
         "//tensorflow/core:lib",
     ] + if_cuda([
+        ":cuda_solvers",
         "@local_xla//xla/stream_executor/cuda:cuda_blas_utils",
         "@local_xla//xla/stream_executor:dnn",
         "@local_xla//xla/tsl/cuda:cusparse",
         "@local_config_cuda//cuda:cub_headers",
     ]) + if_rocm([
+        ":rocm_solvers",
         "@local_xla//xla/stream_executor/rocm:rocsolver_wrapper",
         "@local_xla//xla/stream_executor/rocm:hipsolver_wrapper",
         "@local_xla//xla/stream_executor/rocm:hipsparse_wrapper",

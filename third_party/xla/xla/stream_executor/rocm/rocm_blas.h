@@ -29,7 +29,7 @@ limitations under the License.
 #if TF_ROCM_VERSION >= 50600
 #include "rocm/include/rocblas/rocblas.h"
 #else
-#include "rocm/include/rocblas.h"
+#include "rocm/include/rocblas/rocblas.h"
 #endif
 #include "xla/stream_executor/blas.h"
 #include "xla/stream_executor/gpu/gpu_blas_lt.h"

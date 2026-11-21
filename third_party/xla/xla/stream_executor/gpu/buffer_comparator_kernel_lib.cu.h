@@ -41,8 +41,8 @@ template <typename T>
 __device__ __inline__ auto Canonicalize(T elem) {
   // All fp16 infinities are treated as 65505 or -65505, in order to avoid
   // differences due to overflows.
-  if (Eigen::numext::isinf(elem)) {
-    return std::copysignf(Eigen::NumTraits<xla::half>::highest(), elem);
+  if (__builtin_isinf(static_cast<float>(elem))) {
+    return __builtin_copysignf(Eigen::NumTraits<xla::half>::highest(), static_cast<float>(elem));
   }
   return static_cast<float>(elem);
 }
@@ -70,7 +70,7 @@ __global__ void xla_fp_comparison(T* buffer_a, T* buffer_b,
   auto elem_b = Canonicalize(buffer_b[idx]);
 
   // NaN's are considered equal.
-  if (Eigen::numext::isnan(elem_a) && Eigen::numext::isnan(elem_b)) {
+  if (__builtin_isnan(elem_a) && __builtin_isnan(elem_b)) {
     return;
   }
 
@@ -80,12 +80,13 @@ __global__ void xla_fp_comparison(T* buffer_a, T* buffer_b,
     return;
   }
 
-  float rel_error = Eigen::numext::abs(elem_a - elem_b) /
-                    (Eigen::numext::maxi(Eigen::numext::abs(elem_a),
-                                         Eigen::numext::abs(elem_b)) +
-                     1);
+  float rel_error =
+      __builtin_fabs(elem_a - elem_b) /
+      (__builtin_fmax(__builtin_fabs(elem_a),
+                       __builtin_fabs(elem_b)) +
+       1);
 
-  if (rel_error > rel_error_threshold || Eigen::numext::isnan(rel_error))
+  if (rel_error > rel_error_threshold || __builtin_isnan(rel_error))
     atomicAdd(mismatch_count, 1);
 }
 
@@ -107,8 +108,8 @@ __global__ void xla_int_comparison(T* buffer_a, T* buffer_b,
     elem_b = static_cast<uint64_t>(buffer_b[idx]);
   }
   float rel_error =
-      fabs(elem_a - elem_b) / (fmax(fabs(elem_a), fabs(elem_b)) + 1);
-  if (rel_error > rel_error_threshold || isnan(rel_error))
+      __builtin_fabsf(elem_a - elem_b) / (__builtin_fmaxf(__builtin_fabsf(elem_a), __builtin_fabsf(elem_b)) + 1);
+  if (rel_error > rel_error_threshold || __builtin_isnan(rel_error))
     atomicAdd(mismatch_count, 1);
 }
 

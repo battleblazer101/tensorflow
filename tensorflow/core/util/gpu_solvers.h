@@ -32,7 +32,7 @@ limitations under the License.
 #include "third_party/gpus/cuda/include/cusolverDn.h"
 #else
 #include "rocm/include/hip/hip_complex.h"
-#include "rocm/include/rocblas.h"
+#include "rocm/include/rocblas/rocblas.h"
 #include "rocm/rocm_config.h"
 #if TF_ROCM_VERSION >= 40500
 #include "xla/stream_executor/rocm/hipsolver_wrapper.h"

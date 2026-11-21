@@ -99,10 +99,10 @@ __device__ __forceinline__ void SyncRemoteBlocks(
   if (threadIdx.x < num_ranks) {
     auto target_rank = threadIdx.x;
     PutSignalFlag<T>(
-        signal_pad_ptrs[target_rank] + blockIdx.x * num_ranks + rank,
+        signal_pad_ptrs.data()[target_rank] + blockIdx.x * num_ranks + rank,
         signal_value);
     WaitSignalFlag<T>(
-        signal_pad_ptrs[rank] + blockIdx.x * num_ranks + target_rank,
+        signal_pad_ptrs.data()[rank] + blockIdx.x * num_ranks + target_rank,
         signal_value);
   }
 }
@@ -117,7 +117,7 @@ __device__ __forceinline__ void OneShotAllReduceKernelImpl(
 
   // Copy data from local input buffer to remote input buffer.
   for (int i = offset; i < args.num_elements; i += stride) {
-    VecStore(args.remote_input_buffers[args.rank] + i,
+    VecStore(args.remote_input_buffers.data()[args.rank] + i,
              VecLoad(args.input_buffer + i));
   }
 
@@ -126,7 +126,7 @@ __device__ __forceinline__ void OneShotAllReduceKernelImpl(
   __syncthreads();
 
   for (int i = offset; i < args.num_elements; i += stride) {
-    Vec<T> acc = VecLoad(args.remote_input_buffers[0] + i);
+    Vec<T> acc = VecLoad(args.remote_input_buffers.data()[0] + i);
 
     // Since `remote_input_buffers` are provided in rank order, we get stable
     // reduction results on all devices.
@@ -134,7 +134,7 @@ __device__ __forceinline__ void OneShotAllReduceKernelImpl(
     for (int j = 1; j < kMaxNumAllReduceInputPtrs; ++j) {
       if (j < args.num_ranks) {
         VecOp<T, ReductionKindT>(acc,
-                                 VecLoad(args.remote_input_buffers[j] + i));
+                                 VecLoad(args.remote_input_buffers.data()[j] + i));
       }
     }
 
@@ -167,7 +167,7 @@ __device__ __forceinline__ void TwoShotAllReduceKernelImpl(
       if (offset_i >= args.num_elements) {
         continue;
       }
-      VecStore(args.remote_input_buffers[args.rank] + offset_i,
+      VecStore(args.remote_input_buffers.data()[args.rank] + offset_i,
                VecLoad(args.input_buffer + offset_i));
     }
   }
@@ -192,11 +192,11 @@ __device__ __forceinline__ void TwoShotAllReduceKernelImpl(
       if (r >= args.num_ranks) {
         continue;
       }
-      accs[args.rotated_ranks[r]] =
-          VecLoad(args.remote_input_buffers[args.rotated_ranks[r]] + offset_i);
+      accs.data()[args.rotated_ranks.data()[r]] =
+          VecLoad(args.remote_input_buffers.data()[args.rotated_ranks.data()[r]] + offset_i);
     }
 
-    Vec<T> acc = accs[0];
+    Vec<T> acc = accs.data()[0];
     // Since `remote_input_ptrs` are provided in rank order, we get stable
     // reduction results on all devices.
 #pragma unroll
@@ -204,9 +204,9 @@ __device__ __forceinline__ void TwoShotAllReduceKernelImpl(
       if (r >= args.num_ranks) {
         continue;
       }
-      VecOp<T, ReductionKindT>(acc, accs[r]);
+      VecOp<T, ReductionKindT>(acc, accs.data()[r]);
     }
-    VecStore(args.remote_input_buffers[args.rank] + offset_i, acc);
+    VecStore(args.remote_input_buffers.data()[args.rank] + offset_i, acc);
   }
 
   // Shot2: Wait for all participating devices to finish accumulating data in
@@ -224,13 +224,13 @@ __device__ __forceinline__ void TwoShotAllReduceKernelImpl(
         continue;
       }
       const int64_t offset_i =
-          args.rotated_ranks[r] * args.num_elements_per_rank + i;
+          args.rotated_ranks.data()[r] * args.num_elements_per_rank + i;
       if (offset_i >= args.num_elements) {
         continue;
       }
       VecStore(
           args.output_buffer + offset_i,
-          VecLoad(args.remote_input_buffers[args.rotated_ranks[r]] + offset_i));
+          VecLoad(args.remote_input_buffers.data()[args.rotated_ranks.data()[r]] + offset_i));
     }
   }
 }

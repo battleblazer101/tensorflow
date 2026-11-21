@@ -17,6 +17,7 @@ limitations under the License.
 #include <hip/hip_fp16.h>
 #include <hip/hip_runtime.h>
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 
@@ -53,15 +54,15 @@ void rocm_Broadcast_fp32(void* stream, float* dst, int dst_stride, int batches,
   int x_blocks = (size + 255) / 256;
   hipLaunchKernelGGL(rocm_Broadcast_fp32Kernel,
                      dim3(x_blocks, (batches + 3) / 4, src_batches),
-                     min(256, (int)size), 0, (hipStream_t)stream, dst,
+                     std::min(256, (int)size), 0, (hipStream_t)stream, dst,
                      dst_stride, batches, src, size);
 }
 
 __device__ float sigmoid(float x) {
   if (x > 0)
-    return 1. / (1. + __expf(-x));
+    return 1. / (1. + __builtin_expf(-x));
   else
-    return __expf(x) / (__expf(x) + 1.);
+    return __builtin_expf(x) / (__builtin_expf(x) + 1.);
 }
 
 template <typename T, typename Tbias, int act_mode>
@@ -90,15 +91,15 @@ __global__ void launchInplaceBiasActivation_kernel(
   else if (act_mode == 4)
     v = v > 0.0f ? (v > param ? param : v) : 0.0f;
   else if (act_mode == 5)
-    v = tanh(v);
+    v = __ocml_tanh_f32(v);
   else if (act_mode == 6)
     v = v > -param ? (v > param ? param : v) : -param;
   else if (act_mode == 7)
-    v = v > 0.0f ? v : __expf(v) - 1;
+    v = v > 0.0f ? v : __builtin_expf(v) - 1;
   else if (act_mode == 8)
     v = v > 0.0f ? v : param * v;
   else if (act_mode == 9)
-    v = 0.5 * v * (1 + erf(v / sqrt(2.0f)));
+    v = 0.5 * v * (1 + __ocml_erf_f32(v / __builtin_sqrtf(2.0f)));
   c_data[addr] = (T)v;
 }
 
@@ -109,8 +110,8 @@ void launchInplaceBiasActivation(hipStream_t stream, void* c_data,
                                  float side_input_scale, int activation_mode,
                                  uint64_t batch, uint64_t m, uint64_t n,
                                  int64_t ldc, float param) {
-  uint64_t bx = min(n, static_cast<uint64_t>(256));
-  uint64_t by = min(m, static_cast<uint64_t>(256) / bx);
+  uint64_t bx = std::min(n, static_cast<uint64_t>(256));
+  uint64_t by = std::min(m, static_cast<uint64_t>(256) / bx);
   uint64_t gx = (n + bx - 1) / bx;
   uint64_t gy = (m + by - 1) / by;
   int transpose = (activation_mode >= 10);
