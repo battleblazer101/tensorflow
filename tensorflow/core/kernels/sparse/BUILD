@@ -94,6 +94,7 @@ tf_kernel_library(
         "@com_google_absl//absl/status",
         "@eigen_archive//:eigen3",
     ] + if_cuda_or_rocm([
+        "//tensorflow/core/common_runtime/gpu:gpu_lib",
         "//tensorflow/core/util:cuda_sparse",
     ]) + if_rocm([
         "//tensorflow/core/util:rocm_solvers",
