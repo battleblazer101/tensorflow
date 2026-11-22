@@ -679,26 +679,39 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 diff --git a/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsImpl.h b/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsImpl.h
 --- a/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsImpl.h
 +++ b/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsImpl.h
-@@ -14,3 +14,8 @@
+@@ -14,3 +14,10 @@
  #include "./InternalHeaderCheck.h"
  
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
++extern "C" __device__ float __ocml_log_f32(float);
++extern "C" __device__ float __ocml_sqrt_f32(float);
 +extern "C" __device__ float __ocml_lgamma_f32(float);
 +extern "C" __device__ double __ocml_lgamma_f64(double);
 +#endif
 +
  namespace Eigen {
-@@ -80,1 +85,5 @@
+@@ -80,1 +87,5 @@
 -    return ::lgammaf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +    return ::__ocml_lgamma_f32(x);
 +#else
 +    return ::lgammaf(x);
 +#endif
-@@ -94,1 +103,5 @@
+@@ -94,1 +105,5 @@
 -    return ::lgamma(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +    return ::__ocml_lgamma_f64(x);
 +#else
 +    return ::lgamma(x);
 +#endif
+@@ -701,3 +715,7 @@
+-  x = psqrt(pmul(neg_two, plog(b)));
+-  x0 = psub(x, pdiv(plog(x), x));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  if constexpr (is_same<T, float>::value) {
++    x = ::__ocml_sqrt_f32(pmul(neg_two, ::__ocml_log_f32(b)));
++    x0 = psub(x, pdiv(::__ocml_log_f32(x), x));
++  } else
++#endif
++  { x = psqrt(pmul(neg_two, plog(b))); x0 = psub(x, pdiv(plog(x), x)); }
+   z = preciprocal(x);
