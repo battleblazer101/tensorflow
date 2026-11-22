@@ -13,7 +13,52 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
 --- a/Eigen/src/Core/arch/GPU/PacketMath.h
 +++ b/Eigen/src/Core/arch/GPU/PacketMath.h
-@@ -329,3 +329,7 @@
+@@ -14,3 +14,8 @@
+ #include "../../InternalHeaderCheck.h"
+ 
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++extern "C" __device__ double __ocml_fmin_f64(double, double);
++extern "C" __device__ double __ocml_fmax_f64(double, double);
++#endif
++
+ namespace Eigen {
+@@ -332,3 +337,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE double2 pmin<double2>(const double2& a, const double2& b) {
+-  return make_double2(fmin(a.x, b.x), fmin(a.y, b.y));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return make_double2(::__ocml_fmin_f64(a.x, b.x), ::__ocml_fmin_f64(a.y, b.y));
++#else
++  return make_double2(fmin(a.x, b.x), fmin(a.y, b.y));
++#endif
+ }
+@@ -341,3 +350,7 @@
+ EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE double2 pmax<double2>(const double2& a, const double2& b) {
+-  return make_double2(fmax(a.x, b.x), fmax(a.y, b.y));
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return make_double2(::__ocml_fmax_f64(a.x, b.x), ::__ocml_fmax_f64(a.y, b.y));
++#else
++  return make_double2(fmax(a.x, b.x), fmax(a.y, b.y));
++#endif
+ }
+@@ -477,3 +490,7 @@
+ EIGEN_DEVICE_FUNC inline double predux_max<double2>(const double2& a) {
+-  return fmax(a.x, a.y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_fmax_f64(a.x, a.y);
++#else
++  return fmax(a.x, a.y);
++#endif
+ }
+@@ -486,3 +503,7 @@
+ EIGEN_DEVICE_FUNC inline double predux_min<double2>(const double2& a) {
+-  return fmin(a.x, a.y);
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return ::__ocml_fmin_f64(a.x, a.y);
++#else
++  return fmin(a.x, a.y);
++#endif
+ }
+@@ -329,3 +350,7 @@
  EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmin<float4>(const float4& a, const float4& b) {
 -  return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -22,7 +67,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
 +#endif
  }
-@@ -338,3 +342,7 @@
+@@ -338,3 +363,7 @@
  EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE float4 pmax<float4>(const float4& a, const float4& b) {
 -  return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -31,7 +76,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
 +#endif
  }
-@@ -474,3 +482,7 @@
+@@ -474,3 +503,7 @@
  EIGEN_DEVICE_FUNC inline float predux_max<float4>(const float4& a) {
 -  return fmaxf(fmaxf(a.x, a.y), fmaxf(a.z, a.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -40,7 +85,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return fmaxf(fmaxf(a.x, a.y), fmaxf(a.z, a.w));
 +#endif
  }
-@@ -483,3 +495,7 @@
+@@ -483,3 +516,7 @@
  EIGEN_DEVICE_FUNC inline float predux_min<float4>(const float4& a) {
 -  return fminf(fminf(a.x, a.y), fminf(a.z, a.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -49,7 +94,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return fminf(fminf(a.x, a.y), fminf(a.z, a.w));
 +#endif
  }
-@@ -501,3 +517,7 @@
+@@ -501,3 +538,7 @@
  EIGEN_DEVICE_FUNC inline float4 pabs<float4>(const float4& a) {
 -  return make_float4(fabsf(a.x), fabsf(a.y), fabsf(a.z), fabsf(a.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -58,7 +103,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return make_float4(fabsf(a.x), fabsf(a.y), fabsf(a.z), fabsf(a.w));
 +#endif
  }
-@@ -510,3 +530,7 @@
+@@ -510,3 +551,7 @@
  EIGEN_DEVICE_FUNC inline float4 pfloor<float4>(const float4& a) {
 -  return make_float4(floorf(a.x), floorf(a.y), floorf(a.z), floorf(a.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -67,7 +112,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return make_float4(floorf(a.x), floorf(a.y), floorf(a.z), floorf(a.w));
 +#endif
  }
-@@ -519,3 +543,7 @@
+@@ -519,3 +564,7 @@
  EIGEN_DEVICE_FUNC inline float4 pceil<float4>(const float4& a) {
 -  return make_float4(ceilf(a.x), ceilf(a.y), ceilf(a.z), ceilf(a.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -76,7 +121,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return make_float4(ceilf(a.x), ceilf(a.y), ceilf(a.z), ceilf(a.w));
 +#endif
  }
-@@ -528,3 +556,7 @@
+@@ -528,3 +577,7 @@
  EIGEN_DEVICE_FUNC inline float4 print<float4>(const float4& a) {
 -  return make_float4(rintf(a.x), rintf(a.y), rintf(a.z), rintf(a.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -85,7 +130,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return make_float4(rintf(a.x), rintf(a.y), rintf(a.z), rintf(a.w));
 +#endif
  }
-@@ -537,3 +569,7 @@
+@@ -537,3 +590,7 @@
  EIGEN_DEVICE_FUNC inline float4 ptrunc<float4>(const float4& a) {
 -  return make_float4(truncf(a.x), truncf(a.y), truncf(a.z), truncf(a.w));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -94,7 +139,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  return make_float4(truncf(a.x), truncf(a.y), truncf(a.z), truncf(a.w));
 +#endif
  }
-@@ -975,4 +1011,12 @@
+@@ -975,4 +1032,12 @@
    float a2 = __high2float(a);
 -  float r1 = log1pf(a1);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -109,7 +154,7 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  float r2 = log1pf(a2);
 +#endif
    return __floats2half2_rn(r1, r2);
-@@ -983,4 +1027,12 @@
+@@ -983,4 +1048,12 @@
    float a2 = __high2float(a);
 -  float r1 = expm1f(a1);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
