@@ -124,6 +124,37 @@ diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/Pack
 +  float r2 = expm1f(a2);
 +#endif
    return __floats2half2_rn(r1, r2);
+diff --git a/Eigen/src/Core/GenericPacketMath.h b/Eigen/src/Core/GenericPacketMath.h
+--- a/Eigen/src/Core/GenericPacketMath.h
++++ b/Eigen/src/Core/GenericPacketMath.h
+@@ -15,3 +15,10 @@
+ #include "./InternalHeaderCheck.h"
+ 
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++extern "C" __device__ float __ocml_log_f32(float);
++extern "C" __device__ double __ocml_log_f64(double);
++extern "C" __device__ float __ocml_sqrt_f32(float);
++extern "C" __device__ double __ocml_sqrt_f64(double);
++#endif
++
+ namespace Eigen {
+@@ -1103,4 +1110,8 @@
+ EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS Packet plog(const Packet& a) {
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  if constexpr (is_same<Packet, float>::value) return ::__ocml_log_f32(a);
++  if constexpr (is_same<Packet, double>::value) return ::__ocml_log_f64(a);
++#endif
+   EIGEN_USING_STD(log);
+   return log(a);
+ }
+@@ -1131,3 +1142,7 @@
+ EIGEN_DECLARE_FUNCTION_ALLOWING_MULTIPLE_DEFINITIONS Packet psqrt(const Packet& a) {
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  if constexpr (is_same<Packet, float>::value) return ::__ocml_sqrt_f32(a);
++  if constexpr (is_same<Packet, double>::value) return ::__ocml_sqrt_f64(a);
++#endif
+   return numext::sqrt(a);
+ }
 diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 --- a/Eigen/src/Core/MathFunctions.h
 +++ b/Eigen/src/Core/MathFunctions.h
