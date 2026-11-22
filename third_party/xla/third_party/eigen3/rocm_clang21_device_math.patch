@@ -294,7 +294,15 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::fmaxf(f1, f2));
 +#endif
 +}
-device__ double __ocml_fmax_f64(double, double);
+diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
+--- a/Eigen/src/Core/arch/GPU/PacketMath.h
++++ b/Eigen/src/Core/arch/GPU/PacketMath.h
+@@ -14,3 +14,8 @@
+ #include "../../InternalHeaderCheck.h"
+ 
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++extern "C" __device__ double __ocml_fmin_f64(double, double);
++extern "C" __device__ double __ocml_fmax_f64(double, double);
 +#endif
 +
  namespace Eigen {
