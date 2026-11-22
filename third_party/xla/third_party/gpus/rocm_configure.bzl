@@ -158,6 +158,13 @@ def _rocm_include_path(repository_ctx, rocm_config, bash_bin):
     inc_dirs.append(resource_dir_abs + "/include")
     inc_dirs.append(resource_dir + "/share")
 
+    # A private Clang resource overlay may be selected with -resource-dir in
+    # HIPCC_COMPILE_FLAGS_APPEND. Register its headers as compiler builtins so
+    # Bazel does not reject them as undeclared absolute-path dependencies.
+    overlay_dir = get_host_environ(repository_ctx, "TF_ROCM_CLANG_RESOURCE_DIR")
+    if overlay_dir:
+        inc_dirs.append(overlay_dir.rstrip("/") + "/include")
+
     return inc_dirs
 
 def _enable_rocm(repository_ctx):
@@ -825,6 +832,7 @@ _ENVIRONS = [
     _GCC_HOST_COMPILER_PATH,
     _GCC_HOST_COMPILER_PREFIX,
     "TF_NEED_ROCM",
+    "TF_ROCM_CLANG_RESOURCE_DIR",
     "TF_ROCM_CLANG",
     "TF_NEED_CUDA",  # Needed by the `if_gpu_is_configured` macro
     _ROCM_TOOLKIT_PATH,
