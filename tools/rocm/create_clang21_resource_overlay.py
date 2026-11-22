@@ -12,6 +12,8 @@ MACROS = {
     "#define _ISNANf std::isnan": "#define _ISNANf __ocml_isnan_f32",
     "#define _ISINFd std::isinf": "#define _ISINFd __ocml_isinf_f64",
     "#define _ISINFf std::isinf": "#define _ISINFf __ocml_isinf_f32",
+    "#define _fmaxd max": "#define _fmaxd fmax",
+    "#define _fmaxf max": "#define _fmaxf fmax",
 }
 HEADER = "__clang_cuda_complex_builtins.h"
 
@@ -51,7 +53,7 @@ def main():
         parser.error("Refusing to overwrite a symlink for the patched header")
     destination.write_text(modified)
     print(f"Created private Clang resource overlay: {output}")
-    print(f"Patched only {HEADER}: four HIP classification macros")
+    print(f"Patched only {HEADER}: four HIP classification and two max macros")
     print("System LLVM files remain unchanged.")
 
 
