@@ -598,23 +598,22 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +#endif
 +
  namespace Eigen {
-@@ -793,5 +825,10 @@
+@@ -793,5 +825,9 @@
 -EIGEN_DEVICE_FUNC std::enable_if_t<(std::numeric_limits<T>::has_infinity && !NumTraits<T>::IsComplex), bool> isinf_impl(
 -    const T& x) {
 -  EIGEN_USING_STD(isinf);
 -  return isinf EIGEN_NOT_A_MACRO(x);
 -}
 +EIGEN_DEVICE_FUNC std::enable_if_t<(std::numeric_limits<T>::has_infinity && !NumTraits<T>::IsComplex), bool> isinf_impl(
++    const T& x) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  if constexpr (is_same<T, float>::value || is_same<T, double>::value) {
 +    return __builtin_isinf(x);
 +  } else
 +#endif
-+    const T& x) {
-+  EIGEN_USING_STD(isinf);
-+  return isinf EIGEN_NOT_A_MACRO(x);
++  { EIGEN_USING_STD(isinf); return isinf EIGEN_NOT_A_MACRO(x); }
 +}
-@@ -810,4 +847,9 @@
+@@ -810,4 +846,8 @@
 -isnan_impl(const T& x) {
 -  EIGEN_USING_STD(isnan);
 -  return isnan EIGEN_NOT_A_MACRO(x);
@@ -625,10 +624,9 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +    return __builtin_isnan(x);
 +  } else
 +#endif
-+  EIGEN_USING_STD(isnan);
-+  return isnan EIGEN_NOT_A_MACRO(x);
++  { EIGEN_USING_STD(isnan); return isnan EIGEN_NOT_A_MACRO(x); }
 +}
-@@ -891,3 +933,10 @@
+@@ -891,3 +931,10 @@
    static EIGEN_DEVICE_FUNC EIGEN_STRONG_INLINE Scalar run_rint(const Scalar& x) {
 -    EIGEN_USING_STD(rint) return rint(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -640,7 +638,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +#endif
 +    { EIGEN_USING_STD(rint) return rint(x); }
    }
-@@ -936,3 +985,7 @@
+@@ -936,3 +983,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float mini(const float& x, const float& y) {
 -  return fminf(x, y);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -649,7 +647,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return fminf(x, y);
 +#endif
  }
-@@ -940,3 +993,7 @@
+@@ -940,3 +991,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double mini(const double& x, const double& y) {
 -  return fmin(x, y);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -658,7 +656,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return fmin(x, y);
 +#endif
  }
-@@ -961,3 +1018,7 @@
+@@ -961,3 +1016,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float maxi(const float& x, const float& y) {
 -  return fmaxf(x, y);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -667,7 +665,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return fmaxf(x, y);
 +#endif
  }
-@@ -965,3 +1026,7 @@
+@@ -965,3 +1024,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double maxi(const double& x, const double& y) {
 -  return fmax(x, y);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -676,7 +674,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return fmax(x, y);
 +#endif
  }
-@@ -1109,3 +1174,7 @@
+@@ -1109,3 +1172,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float absdiff(const float& x, const float& y) {
 -  return fabsf(x - y);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -685,7 +683,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return fabsf(x - y);
 +#endif
  }
-@@ -1113,3 +1182,7 @@
+@@ -1113,3 +1180,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double absdiff(const double& x, const double& y) {
 -  return fabs(x - y);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -694,7 +692,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return fabs(x - y);
 +#endif
  }
-@@ -1150,3 +1223,7 @@
+@@ -1150,3 +1221,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float log1p(const float& x) {
 -  return ::log1pf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -703,7 +701,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::log1pf(x);
 +#endif
  }
-@@ -1155,3 +1232,7 @@
+@@ -1155,3 +1230,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double log1p(const double& x) {
 -  return ::log1p(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -712,7 +710,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::log1p(x);
 +#endif
  }
-@@ -1223,3 +1304,7 @@
+@@ -1223,3 +1302,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float floor(const float& x) {
 -  return ::floorf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -721,7 +719,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::floorf(x);
 +#endif
  }
-@@ -1227,3 +1312,7 @@
+@@ -1227,3 +1310,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double floor(const double& x) {
 -  return ::floor(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -730,7 +728,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::floor(x);
 +#endif
  }
-@@ -1231,3 +1320,7 @@
+@@ -1231,3 +1318,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float ceil(const float& x) {
 -  return ::ceilf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -739,7 +737,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::ceilf(x);
 +#endif
  }
-@@ -1235,3 +1328,7 @@
+@@ -1235,3 +1326,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double ceil(const double& x) {
 -  return ::ceil(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -748,7 +746,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::ceil(x);
 +#endif
  }
-@@ -1239,3 +1336,7 @@
+@@ -1239,3 +1334,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float trunc(const float& x) {
 -  return ::truncf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -757,7 +755,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::truncf(x);
 +#endif
  }
-@@ -1243,3 +1344,7 @@
+@@ -1243,3 +1342,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double trunc(const double& x) {
 -  return ::trunc(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -766,7 +764,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::trunc(x);
 +#endif
  }
-@@ -1337,3 +1442,7 @@
+@@ -1337,3 +1440,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float log(const float& x) {
 -  return ::logf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -775,7 +773,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::logf(x);
 +#endif
  }
-@@ -1342,3 +1451,7 @@
+@@ -1342,3 +1449,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double log(const double& x) {
 -  return ::log(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -784,7 +782,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::log(x);
 +#endif
  }
-@@ -1369,3 +1482,7 @@
+@@ -1369,3 +1480,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float abs(const float& x) {
 -  return ::fabsf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -793,7 +791,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::fabsf(x);
 +#endif
  }
-@@ -1374,3 +1491,7 @@
+@@ -1374,3 +1489,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double abs(const double& x) {
 -  return ::fabs(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -802,7 +800,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::fabs(x);
 +#endif
  }
-@@ -1379,3 +1500,7 @@
+@@ -1379,3 +1498,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float abs(const std::complex<float>& x) {
 -  return ::hypotf(x.real(), x.imag());
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -811,7 +809,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::hypotf(x.real(), x.imag());
 +#endif
  }
-@@ -1384,3 +1509,7 @@
+@@ -1384,3 +1507,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double abs(const std::complex<double>& x) {
 -  return ::hypot(x.real(), x.imag());
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -820,7 +818,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::hypot(x.real(), x.imag());
 +#endif
  }
-@@ -1449,3 +1578,7 @@
+@@ -1449,3 +1576,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float exp(const float& x) {
 -  return ::expf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -829,7 +827,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::expf(x);
 +#endif
  }
-@@ -1454,3 +1587,7 @@
+@@ -1454,3 +1585,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double exp(const double& x) {
 -  return ::exp(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -838,7 +836,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::exp(x);
 +#endif
  }
-@@ -1459,5 +1596,17 @@
+@@ -1459,5 +1594,17 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<float> exp(const std::complex<float>& x) {
 -  float com = ::expf(x.real());
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -859,7 +857,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  float res_imag = com * ::sinf(x.imag());
 +#endif
    return std::complex<float>(res_real, res_imag);
-@@ -1467,5 +1616,17 @@
+@@ -1467,5 +1614,17 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<double> exp(const std::complex<double>& x) {
 -  double com = ::exp(x.real());
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -880,7 +878,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  double res_imag = com * ::sin(x.imag());
 +#endif
    return std::complex<double>(res_real, res_imag);
-@@ -1506,3 +1667,7 @@
+@@ -1506,3 +1665,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float exp2(const float& x) {
 -  return ::exp2f(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -889,7 +887,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::exp2f(x);
 +#endif
  }
-@@ -1511,3 +1676,7 @@
+@@ -1511,3 +1674,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double exp2(const double& x) {
 -  return ::exp2(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -898,7 +896,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::exp2(x);
 +#endif
  }
-@@ -1516,5 +1685,17 @@
+@@ -1516,5 +1683,17 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<float> exp2(const std::complex<float>& x) {
 -  float com = ::exp2f(x.real());
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -919,7 +917,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  float res_imag = com * ::sinf(static_cast<float>(EIGEN_LN2) * x.imag());
 +#endif
    return std::complex<float>(res_real, res_imag);
-@@ -1524,5 +1705,17 @@
+@@ -1524,5 +1703,17 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE std::complex<double> exp2(const std::complex<double>& x) {
 -  double com = ::exp2(x.real());
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -940,7 +938,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  double res_imag = com * ::sin(static_cast<double>(EIGEN_LN2) * x.imag());
 +#endif
    return std::complex<double>(res_real, res_imag);
-@@ -1543,3 +1736,7 @@
+@@ -1543,3 +1734,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float expm1(const float& x) {
 -  return ::expm1f(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -949,7 +947,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::expm1f(x);
 +#endif
  }
-@@ -1548,3 +1745,7 @@
+@@ -1548,3 +1743,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double expm1(const double& x) {
 -  return ::expm1(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -958,7 +956,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::expm1(x);
 +#endif
  }
-@@ -1565,3 +1766,7 @@
+@@ -1565,3 +1764,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float cos(const float& x) {
 -  return ::cosf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -967,7 +965,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::cosf(x);
 +#endif
  }
-@@ -1570,3 +1775,7 @@
+@@ -1570,3 +1773,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double cos(const double& x) {
 -  return ::cos(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -976,7 +974,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::cos(x);
 +#endif
  }
-@@ -1587,3 +1796,7 @@
+@@ -1587,3 +1794,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float sin(const float& x) {
 -  return ::sinf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -985,7 +983,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::sinf(x);
 +#endif
  }
-@@ -1592,3 +1805,7 @@
+@@ -1592,3 +1803,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double sin(const double& x) {
 -  return ::sin(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -994,7 +992,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::sin(x);
 +#endif
  }
-@@ -1609,3 +1826,7 @@
+@@ -1609,3 +1824,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tan(const float& x) {
 -  return ::tanf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1003,7 +1001,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::tanf(x);
 +#endif
  }
-@@ -1614,3 +1835,7 @@
+@@ -1614,3 +1833,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double tan(const double& x) {
 -  return ::tan(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1012,7 +1010,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::tan(x);
 +#endif
  }
-@@ -1638,3 +1863,7 @@
+@@ -1638,3 +1861,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float acos(const float& x) {
 -  return ::acosf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1021,7 +1019,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::acosf(x);
 +#endif
  }
-@@ -1643,3 +1872,7 @@
+@@ -1643,3 +1870,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double acos(const double& x) {
 -  return ::acos(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1030,7 +1028,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::acos(x);
 +#endif
  }
-@@ -1667,3 +1900,7 @@
+@@ -1667,3 +1898,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float asin(const float& x) {
 -  return ::asinf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1039,7 +1037,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::asinf(x);
 +#endif
  }
-@@ -1672,3 +1909,7 @@
+@@ -1672,3 +1907,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double asin(const double& x) {
 -  return ::asin(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1048,7 +1046,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::asin(x);
 +#endif
  }
-@@ -1702,3 +1943,7 @@
+@@ -1702,3 +1941,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float atan(const float& x) {
 -  return ::atanf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1057,7 +1055,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::atanf(x);
 +#endif
  }
-@@ -1707,3 +1952,7 @@
+@@ -1707,3 +1950,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double atan(const double& x) {
 -  return ::atan(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1066,7 +1064,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::atan(x);
 +#endif
  }
-@@ -1724,3 +1973,7 @@
+@@ -1724,3 +1971,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float cosh(const float& x) {
 -  return ::coshf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1075,7 +1073,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::coshf(x);
 +#endif
  }
-@@ -1729,3 +1982,7 @@
+@@ -1729,3 +1980,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double cosh(const double& x) {
 -  return ::cosh(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1084,7 +1082,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::cosh(x);
 +#endif
  }
-@@ -1746,3 +2003,7 @@
+@@ -1746,3 +2001,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float sinh(const float& x) {
 -  return ::sinhf(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1093,7 +1091,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::sinhf(x);
 +#endif
  }
-@@ -1751,3 +2012,7 @@
+@@ -1751,3 +2010,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double sinh(const double& x) {
 -  return ::sinh(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1102,7 +1100,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::sinh(x);
 +#endif
  }
-@@ -1771,4 +2036,8 @@
+@@ -1771,4 +2034,8 @@
  template <>
 -EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
 +EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float tanh(const float& x) {
@@ -1113,7 +1111,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::tanhf(x);
 +#endif
  }
-@@ -1777,3 +2046,7 @@
+@@ -1777,3 +2044,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double tanh(const double& x) {
 -  return ::tanh(x);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1122,7 +1120,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::tanh(x);
 +#endif
  }
-@@ -1794,3 +2067,7 @@
+@@ -1794,3 +2065,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE float fmod(const float& a, const float& b) {
 -  return ::fmodf(a, b);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -1131,7 +1129,7 @@ diff --git a/Eigen/src/Core/MathFunctions.h b/Eigen/src/Core/MathFunctions.h
 +  return ::fmodf(a, b);
 +#endif
  }
-@@ -1799,3 +2076,7 @@
+@@ -1799,3 +2074,7 @@
  EIGEN_DEVICE_FUNC EIGEN_ALWAYS_INLINE double fmod(const double& a, const double& b) {
 -  return ::fmod(a, b);
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
