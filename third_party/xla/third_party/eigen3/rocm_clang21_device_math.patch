@@ -78,16 +78,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::sqrtf(float(a)));
 +#endif
 +}
-@@ -624,1 +683,7 @@
--EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sqrt(const bfloat16& a) { return bfloat16(::sqrtf(float(a))); }
-+EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sqrt(const bfloat16& a) {
-+#if defined(EIGEN_HIP_DEVICE_COMPILE)
-+  return bfloat16(::__ocml_sqrt_f32(float(a)));
-+#else
-+  return bfloat16(::sqrtf(float(a)));
-+#endif
-+}
-@@ -625,3 +690,7 @@
+@@ -625,3 +684,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 pow(const bfloat16& a, const bfloat16& b) {
 -  return bfloat16(::powf(float(a), float(b)));
 -}
@@ -98,7 +89,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::powf(float(a), float(b)));
 +#endif
 +}
-@@ -628,3 +697,7 @@
+@@ -628,3 +691,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 atan2(const bfloat16& a, const bfloat16& b) {
 -  return bfloat16(::atan2f(float(a), float(b)));
 -}
@@ -109,7 +100,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::atan2f(float(a), float(b)));
 +#endif
 +}
-@@ -631,1 +704,7 @@
+@@ -631,1 +698,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sin(const bfloat16& a) { return bfloat16(::sinf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sin(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -118,7 +109,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::sinf(float(a)));
 +#endif
 +}
-@@ -632,1 +711,7 @@
+@@ -632,1 +705,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 cos(const bfloat16& a) { return bfloat16(::cosf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 cos(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -127,7 +118,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::cosf(float(a)));
 +#endif
 +}
-@@ -633,1 +718,7 @@
+@@ -633,1 +712,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 tan(const bfloat16& a) { return bfloat16(::tanf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 tan(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -136,7 +127,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::tanf(float(a)));
 +#endif
 +}
-@@ -634,1 +725,7 @@
+@@ -634,1 +719,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 asin(const bfloat16& a) { return bfloat16(::asinf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 asin(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -145,7 +136,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::asinf(float(a)));
 +#endif
 +}
-@@ -635,1 +732,7 @@
+@@ -635,1 +726,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acos(const bfloat16& a) { return bfloat16(::acosf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acos(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -154,7 +145,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::acosf(float(a)));
 +#endif
 +}
-@@ -636,1 +739,7 @@
+@@ -636,1 +733,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 atan(const bfloat16& a) { return bfloat16(::atanf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 atan(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -163,7 +154,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::atanf(float(a)));
 +#endif
 +}
-@@ -637,1 +746,7 @@
+@@ -637,1 +740,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sinh(const bfloat16& a) { return bfloat16(::sinhf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sinh(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -172,7 +163,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::sinhf(float(a)));
 +#endif
 +}
-@@ -638,1 +753,7 @@
+@@ -638,1 +747,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 cosh(const bfloat16& a) { return bfloat16(::coshf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 cosh(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -181,7 +172,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::coshf(float(a)));
 +#endif
 +}
-@@ -639,1 +760,7 @@
+@@ -639,1 +754,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 tanh(const bfloat16& a) { return bfloat16(::tanhf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 tanh(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -190,7 +181,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::tanhf(float(a)));
 +#endif
 +}
-@@ -640,1 +767,7 @@
+@@ -640,1 +761,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 asinh(const bfloat16& a) { return bfloat16(::asinhf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 asinh(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -199,7 +190,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::asinhf(float(a)));
 +#endif
 +}
-@@ -641,1 +774,7 @@
+@@ -641,1 +768,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acosh(const bfloat16& a) { return bfloat16(::acoshf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acosh(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -208,7 +199,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::acoshf(float(a)));
 +#endif
 +}
-@@ -642,1 +781,7 @@
+@@ -642,1 +775,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 atanh(const bfloat16& a) { return bfloat16(::atanhf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 atanh(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -217,7 +208,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::atanhf(float(a)));
 +#endif
 +}
-@@ -643,1 +788,7 @@
+@@ -643,1 +782,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 floor(const bfloat16& a) { return bfloat16(::floorf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 floor(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -226,7 +217,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::floorf(float(a)));
 +#endif
 +}
-@@ -644,1 +795,7 @@
+@@ -644,1 +789,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 ceil(const bfloat16& a) { return bfloat16(::ceilf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 ceil(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -235,7 +226,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::ceilf(float(a)));
 +#endif
 +}
-@@ -645,1 +802,7 @@
+@@ -645,1 +796,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 rint(const bfloat16& a) { return bfloat16(::rintf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 rint(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -244,7 +235,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::rintf(float(a)));
 +#endif
 +}
-@@ -646,1 +809,7 @@
+@@ -646,1 +803,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 round(const bfloat16& a) { return bfloat16(::roundf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 round(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -253,7 +244,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::roundf(float(a)));
 +#endif
 +}
-@@ -647,1 +816,7 @@
+@@ -647,1 +810,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 trunc(const bfloat16& a) { return bfloat16(::truncf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 trunc(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -262,7 +253,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::truncf(float(a)));
 +#endif
 +}
-@@ -648,3 +823,7 @@
+@@ -648,3 +817,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 fmod(const bfloat16& a, const bfloat16& b) {
 -  return bfloat16(::fmodf(float(a), float(b)));
 -}
@@ -273,7 +264,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::fmodf(float(a), float(b)));
 +#endif
 +}
-@@ -664,5 +843,9 @@
+@@ -664,5 +837,9 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 fmin(const bfloat16& a, const bfloat16& b) {
 -  const float f1 = static_cast<float>(a);
 -  const float f2 = static_cast<float>(b);
@@ -288,7 +279,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::fminf(f1, f2));
 +#endif
 +}
-@@ -670,5 +853,9 @@
+@@ -670,5 +847,9 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 fmax(const bfloat16& a, const bfloat16& b) {
 -  const float f1 = static_cast<float>(a);
 -  const float f2 = static_cast<float>(b);
@@ -303,15 +294,7 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::fmaxf(f1, f2));
 +#endif
 +}
-diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
---- a/Eigen/src/Core/arch/GPU/PacketMath.h
-+++ b/Eigen/src/Core/arch/GPU/PacketMath.h
-@@ -14,3 +14,8 @@
- #include "../../InternalHeaderCheck.h"
- 
-+#if defined(EIGEN_HIP_DEVICE_COMPILE)
-+extern "C" __device__ double __ocml_fmin_f64(double, double);
-+extern "C" __device__ double __ocml_fmax_f64(double, double);
+device__ double __ocml_fmax_f64(double, double);
 +#endif
 +
  namespace Eigen {
