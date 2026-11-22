@@ -704,7 +704,7 @@ diff --git a/unsupported/Eigen/src/SpecialFunctions/SpecialFunctionsImpl.h b/uns
 +#else
 +    return ::lgamma(x);
 +#endif
-@@ -701,3 +715,7 @@
+@@ -701,3 +711,8 @@
 -  x = psqrt(pmul(neg_two, plog(b)));
 -  x0 = psub(x, pdiv(plog(x), x));
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
