@@ -1,7 +1,14 @@
 diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Default/BFloat16.h
 --- a/Eigen/src/Core/arch/Default/BFloat16.h
 +++ b/Eigen/src/Core/arch/Default/BFloat16.h
-@@ -624,1 +624,7 @@
+@@ -19,2 +19,6 @@
+ // IWYU pragma: private
+ #include "../../InternalHeaderCheck.h"
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++extern "C" __device__ float __ocml_acosh_f32(float);
++#endif
++
+@@ -624,1 +628,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sqrt(const bfloat16& a) { return bfloat16(::sqrtf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 sqrt(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
@@ -10,13 +17,22 @@ diff --git a/Eigen/src/Core/arch/Default/BFloat16.h b/Eigen/src/Core/arch/Defaul
 +  return bfloat16(::sqrtf(float(a)));
 +#endif
 +}
-@@ -635,1 +641,7 @@
+@@ -635,1 +645,7 @@
 -EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acos(const bfloat16& a) { return bfloat16(::acosf(float(a))); }
 +EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acos(const bfloat16& a) {
 +#if defined(EIGEN_HIP_DEVICE_COMPILE)
 +  return bfloat16(::__ocml_acos_f32(float(a)));
 +#else
 +  return bfloat16(::acosf(float(a)));
++#endif
++}
+@@ -641,1 +657,7 @@
+-EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acosh(const bfloat16& a) { return bfloat16(::acoshf(float(a))); }
++EIGEN_STRONG_INLINE EIGEN_DEVICE_FUNC bfloat16 acosh(const bfloat16& a) {
++#if defined(EIGEN_HIP_DEVICE_COMPILE)
++  return bfloat16(::__ocml_acosh_f32(float(a)));
++#else
++  return bfloat16(::acoshf(float(a)));
 +#endif
 +}
 diff --git a/Eigen/src/Core/arch/GPU/PacketMath.h b/Eigen/src/Core/arch/GPU/PacketMath.h
